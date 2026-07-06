@@ -1,5 +1,13 @@
 # Disaster Risk Prediction Dashboard
 
+| Field | Value |
+| --- | --- |
+| **Project** | Disaster Risk Prediction Dashboard |
+| **Author** | Sanman |
+| **Date** | July 2026 |
+| **Version** | 3.0 |
+| **Status** | Research Submission (Simulation-Based) |
+
 > **Simulation-based analytics prototype.** This project uses entirely synthetic data
 > generated with a fixed random seed. All numerical findings demonstrate an analytical
 > workflow and must not be interpreted as evidence about real geographical areas.
