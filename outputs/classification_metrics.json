@@ -1,6 +1,6 @@
 {
-  "selected_model": "XGBoost",
-  "threshold": 0.1708,
+  "selected_model": "Random Forest",
+  "threshold": 0.1231,
   "split_info": {
     "total_usable_rows": 13100,
     "december_2025_dropped": 100,
@@ -11,17 +11,11 @@
       "percentage": 73.28,
       "positive_rate": 0.1556
     },
-    "calibration": {
-      "period": "2023-01 to 2023-12",
-      "n_rows": 1200,
-      "percentage": 9.16,
-      "positive_rate": 0.1508
-    },
     "validation": {
-      "period": "2024-01 to 2024-12",
-      "n_rows": 1200,
-      "percentage": 9.16,
-      "positive_rate": 0.1467
+      "period": "2023-01 to 2024-12",
+      "n_rows": 2400,
+      "percentage": 18.32,
+      "positive_rate": 0.1487
     },
     "test": {
       "period": "2025-01 to 2025-11",
@@ -33,141 +27,134 @@
   "validation_comparison_default_threshold": {
     "Logistic Regression": {
       "accuracy": 0.8633,
-      "precision": 0.6667,
-      "recall": 0.1364,
-      "specificity": 0.9883,
-      "f1_score": 0.2264,
-      "roc_auc": 0.8216,
-      "pr_auc": 0.4737,
-      "brier_score": 0.0993,
-      "balanced_accuracy": 0.5623,
-      "mcc": 0.2585,
-      "ece": 0.0071
+      "precision": 0.679,
+      "recall": 0.1541,
+      "specificity": 0.9873,
+      "f1_score": 0.2511,
+      "roc_auc": 0.8246,
+      "pr_auc": 0.4819,
+      "brier_score": 0.0994,
+      "balanced_accuracy": 0.5707,
+      "mcc": 0.2785
     },
     "Random Forest": {
-      "accuracy": 0.88,
-      "precision": 0.7424,
-      "recall": 0.2784,
-      "specificity": 0.9834,
-      "f1_score": 0.405,
-      "roc_auc": 0.859,
-      "pr_auc": 0.5926,
-      "brier_score": 0.0877,
-      "balanced_accuracy": 0.6309,
-      "mcc": 0.4063,
-      "ece": 0.019
+      "accuracy": 0.8783,
+      "precision": 0.6946,
+      "recall": 0.3249,
+      "specificity": 0.975,
+      "f1_score": 0.4427,
+      "roc_auc": 0.8428,
+      "pr_auc": 0.5653,
+      "brier_score": 0.0911,
+      "balanced_accuracy": 0.65,
+      "mcc": 0.4195
     },
     "XGBoost": {
-      "accuracy": 0.8917,
-      "precision": 0.7556,
-      "recall": 0.3864,
-      "specificity": 0.9785,
-      "f1_score": 0.5113,
-      "roc_auc": 0.8701,
-      "pr_auc": 0.6289,
-      "brier_score": 0.0833,
-      "balanced_accuracy": 0.6824,
-      "mcc": 0.4901,
-      "ece": 0.0125
+      "accuracy": 0.8754,
+      "precision": 0.6686,
+      "recall": 0.3221,
+      "specificity": 0.9721,
+      "f1_score": 0.4348,
+      "roc_auc": 0.8342,
+      "pr_auc": 0.5422,
+      "brier_score": 0.0941,
+      "balanced_accuracy": 0.6471,
+      "mcc": 0.4059
     }
   },
   "validation_comparison_optimal_threshold": {
     "Logistic Regression": {
-      "accuracy": 0.7317,
-      "precision": 0.3294,
-      "recall": 0.8011,
-      "specificity": 0.7197,
-      "f1_score": 0.4669,
-      "roc_auc": 0.8216,
-      "pr_auc": 0.4737,
-      "brier_score": 0.0993,
-      "balanced_accuracy": 0.7604,
-      "mcc": 0.3847,
-      "ece": 0.0071
+      "accuracy": 0.6642,
+      "precision": 0.2916,
+      "recall": 0.8796,
+      "specificity": 0.6265,
+      "f1_score": 0.4379,
+      "roc_auc": 0.8246,
+      "pr_auc": 0.4819,
+      "brier_score": 0.0994,
+      "balanced_accuracy": 0.753,
+      "mcc": 0.3621
     },
     "Random Forest": {
-      "accuracy": 0.7592,
-      "precision": 0.3605,
-      "recall": 0.8295,
-      "specificity": 0.7471,
-      "f1_score": 0.5026,
-      "roc_auc": 0.859,
-      "pr_auc": 0.5926,
-      "brier_score": 0.0877,
-      "balanced_accuracy": 0.7883,
-      "mcc": 0.4314,
-      "ece": 0.019
+      "accuracy": 0.7429,
+      "precision": 0.3407,
+      "recall": 0.7787,
+      "specificity": 0.7367,
+      "f1_score": 0.474,
+      "roc_auc": 0.8428,
+      "pr_auc": 0.5653,
+      "brier_score": 0.0911,
+      "balanced_accuracy": 0.7577,
+      "mcc": 0.3871
     },
     "XGBoost": {
-      "accuracy": 0.79,
-      "precision": 0.3927,
-      "recall": 0.7898,
-      "specificity": 0.79,
-      "f1_score": 0.5245,
-      "roc_auc": 0.8701,
-      "pr_auc": 0.6289,
-      "brier_score": 0.0833,
-      "balanced_accuracy": 0.7899,
-      "mcc": 0.4498,
-      "ece": 0.0125
+      "accuracy": 0.7762,
+      "precision": 0.3732,
+      "recall": 0.7423,
+      "specificity": 0.7822,
+      "f1_score": 0.4967,
+      "roc_auc": 0.8342,
+      "pr_auc": 0.5422,
+      "brier_score": 0.0941,
+      "balanced_accuracy": 0.7622,
+      "mcc": 0.4089
     }
   },
   "test_metrics": {
     "confusion_matrix": [
       [
-        701,
-        224
+        659,
+        266
       ],
       [
-        33,
-        142
+        39,
+        136
       ]
     ],
-    "accuracy": 0.7664,
-    "precision": 0.388,
-    "recall": 0.8114,
-    "specificity": 0.7578,
-    "f1_score": 0.525,
-    "roc_auc": 0.8587,
-    "pr_auc": 0.5876,
-    "brier_score": 0.0937,
-    "balanced_accuracy": 0.7846,
-    "mcc": 0.4419,
-    "ece": 0.0176
+    "accuracy": 0.7227,
+    "precision": 0.3383,
+    "recall": 0.7771,
+    "specificity": 0.7124,
+    "f1_score": 0.4714,
+    "roc_auc": 0.8358,
+    "pr_auc": 0.5314,
+    "brier_score": 0.0999,
+    "balanced_accuracy": 0.7448,
+    "mcc": 0.3719
   },
   "confusion_matrix_counts": {
-    "TP": 142,
-    "FP": 224,
-    "FN": 33,
-    "TN": 701
+    "TP": 136,
+    "FP": 266,
+    "FN": 39,
+    "TN": 659
   },
-  "false_discovery_rate": 0.612,
+  "false_discovery_rate": 0.6617,
   "calibration": {
     "null_model_brier": 0.1338,
-    "model_brier": 0.0937,
-    "brier_skill_score": 0.2998,
+    "model_brier": 0.0999,
+    "brier_skill_score": 0.2532,
     "bss_interpretation": "skillful (>=0.25)"
   },
   "bootstrap_95_ci": {
     "roc_auc": {
-      "lower": 0.8273,
-      "upper": 0.8888
+      "lower": 0.8065,
+      "upper": 0.8655
     },
     "pr_auc": {
-      "lower": 0.5085,
-      "upper": 0.6671
+      "lower": 0.4491,
+      "upper": 0.6053
     },
     "recall": {
-      "lower": 0.7443,
-      "upper": 0.8753
+      "lower": 0.7179,
+      "upper": 0.8432
     },
     "precision": {
-      "lower": 0.3426,
-      "upper": 0.4328
+      "lower": 0.2923,
+      "upper": 0.3822
     },
     "f1_score": {
-      "lower": 0.4769,
-      "upper": 0.5688
+      "lower": 0.4217,
+      "upper": 0.5173
     }
   }
 }
