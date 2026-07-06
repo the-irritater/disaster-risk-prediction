@@ -1,0 +1,62 @@
+Column_Name,Data_Type,Variable_Role,Description
+Record_ID,str,Identification,Unique primary key for each district-month observation
+District,str,Identification,Unique ID code of the district (D_001 to D_100)
+State,str,Identification,State to which the district belongs (State_A to State_E)
+Region,str,Identification,"Geographical region (North, Central, East, South, West)"
+Latitude,float64,Spatial Coordinate,Latitude coordinate of the district centroid
+Longitude,float64,Spatial Coordinate,Longitude coordinate of the district centroid
+Year,int64,Temporal Coordinate,Calendar year of the observation (2015 to 2025)
+Month,int64,Temporal Coordinate,Calendar month of the observation (1 to 12)
+Event_Date,str,Temporal Coordinate,First date of the district-month (YYYY-MM-01)
+Disaster_Type,str,Disaster Characteristic,"The type of disaster that occurred (Flood, Cyclone, etc., or None)"
+Disaster_Occurred,int64,Disaster Occurrence Flag,"Binary flag: 1 if a disaster occurred, 0 otherwise"
+Disaster_Duration_Days,int64,Disaster Characteristic,Duration of the disaster event in days
+Disaster_Magnitude,float64,Disaster Characteristic,Physical magnitude of the hazard event
+Hazard_Severity,float64,Disaster Characteristic,Relative severity score of the hazard (1 to 10)
+Monthly_Rainfall_mm,float64,Environmental Variable,Monthly raw rainfall in millimetres for the observation month
+Compound_Event,int64,Disaster Characteristic,"Binary flag: 1 if two or more hazard types activated simultaneously in this district-month, 0 otherwise"
+Rainfall_Anomaly,float64,Environmental Variable,Normalized rainfall deviation from the monthly baseline
+Temperature_Celsius,float64,Environmental Variable,Mean temperature in Celsius
+Temperature_Anomaly,float64,Environmental Variable,Temperature deviation from the monthly seasonal baseline
+Wind_Speed_kmph,float64,Environmental Variable,Mean wind speed in kilometers per hour
+River_Level_Metres,float64,Environmental Variable,Mean height of local rivers in meters
+Soil_Moisture,float64,Environmental Variable,Normalized soil moisture content (0 to 1)
+Drought_Index,float64,Environmental Variable,Index of agricultural dryness (0 to 100)
+Vegetation_Index,float64,Environmental Variable,Normalized Difference Vegetation Index (NDVI) (0.1 to 0.9)
+Elevation_Metres,float64,Environmental Variable,District elevation in meters above sea level
+Slope_Degrees,float64,Environmental Variable,Average slope angle of district terrain in degrees
+Distance_From_Coast_km,float64,Environmental Variable,Shortest distance to the coastline in kilometers
+Distance_From_River_km,float64,Environmental Variable,Shortest distance to the major river in kilometers
+Seismic_Activity_Index,float64,Environmental Variable,Index representing seismological activity levels
+Population,int64,Exposure Variable,Total population of the district
+Area_SqKm,float64,Feature (Derived),Custom feature engineered column
+Population_Density,float64,Exposure Variable,Population per square kilometer
+Urbanisation_Rate,float64,Exposure Variable,Percentage of population living in urban areas
+Number_of_Households,int64,Exposure Variable,Estimated total households in the district
+Infrastructure_Density,float64,Exposure Variable,Index of infrastructure development density
+Agricultural_Land_Percentage,float64,Exposure Variable,Percentage of land area dedicated to agriculture
+Industrial_Area_Percentage,float64,Exposure Variable,Percentage of land area dedicated to industry
+Poverty_Rate,float64,Vulnerability Variable,Percentage of population living below the poverty line
+Elderly_Population_Percentage,float64,Vulnerability Variable,Percentage of population aged 65 or above
+Child_Population_Percentage,float64,Vulnerability Variable,Percentage of population aged 14 or below
+Literacy_Rate,float64,Vulnerability Variable,Percentage of literate population
+Housing_Quality_Index,float64,Vulnerability Variable,Composite index of housing structural integrity (0-100)
+Healthcare_Access_Index,float64,Vulnerability Variable,Composite index of healthcare accessibility (0-100)
+Road_Access_Index,float64,Vulnerability Variable,Composite index of road infrastructure quality (0-100)
+Communication_Access_Index,float64,Vulnerability Variable,Composite index of telecommunications access (0-100)
+Raw_Shelter_Count,int64,Preparedness Resource,Raw count of operational emergency shelters
+Raw_Hospital_Count,int64,Preparedness Resource,Raw count of general hospitals
+Raw_Rescue_Team_Count,int64,Preparedness Resource,Raw count of disaster rescue teams
+Early_Warning_System,int64,Preparedness Variable,"Binary flag: 1 if operational, 0 otherwise"
+Evacuation_Plan_Available,int64,Preparedness Variable,"Binary flag: 1 if detailed plan exists, 0 otherwise"
+Emergency_Response_Time_Minutes,float64,Preparedness Variable,Average emergency service response time in minutes
+Disaster_Preparedness_Index,float64,Preparedness Variable,Composite preparedness score (10 to 100)
+Government_Response_Score,float64,Preparedness Variable,Response rating score of local authorities (30 to 100)
+Number_of_Deaths,int64,Post-Event Impact Variable,Total fatalities caused by the disaster event
+Number_of_Injuries,int64,Post-Event Impact Variable,Total injuries caused by the disaster event
+Number_of_People_Affected,int64,Post-Event Impact Variable,Total people requiring immediate relief or shelter
+Displacement_Count,int64,Post-Event Impact Variable,Total individuals displaced from their homes
+Houses_Damaged,int64,Post-Event Impact Variable,Total residential houses damaged or destroyed
+Infrastructure_Damage_Score,float64,Post-Event Impact Variable,Score representing damage to roads/power (0-100)
+Crop_Loss_Percentage,float64,Post-Event Impact Variable,Percentage of agricultural crop loss
+Economic_Loss_Million,float64,Post-Event Impact Variable,Estimated economic loss in USD Millions
