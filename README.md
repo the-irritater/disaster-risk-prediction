@@ -1,4 +1,4 @@
-# Disaster Risk Prediction Dashboard
+# Disaster Risk Prediction
 
 | Field | Value |
 | --- | --- |
