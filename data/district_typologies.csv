@@ -1,101 +1,101 @@
-District,Cluster,Cluster_Label
-D_001,0,High-Exposure Well-Prepared
-D_002,0,High-Exposure Well-Prepared
-D_003,0,High-Exposure Well-Prepared
-D_004,3,High-Vulnerability Low-Capacity
-D_005,2,Low-Risk Well-Prepared
-D_006,0,High-Exposure Well-Prepared
-D_007,3,High-Vulnerability Low-Capacity
-D_008,2,Low-Risk Well-Prepared
-D_009,1,High-Exposure Well-Prepared
-D_010,1,High-Exposure Well-Prepared
-D_011,3,High-Vulnerability Low-Capacity
-D_012,0,High-Exposure Well-Prepared
-D_013,2,Low-Risk Well-Prepared
-D_014,0,High-Exposure Well-Prepared
-D_015,0,High-Exposure Well-Prepared
-D_016,0,High-Exposure Well-Prepared
-D_017,2,Low-Risk Well-Prepared
-D_018,3,High-Vulnerability Low-Capacity
-D_019,1,High-Exposure Well-Prepared
-D_020,1,High-Exposure Well-Prepared
-D_021,0,High-Exposure Well-Prepared
-D_022,3,High-Vulnerability Low-Capacity
-D_023,0,High-Exposure Well-Prepared
-D_024,2,Low-Risk Well-Prepared
-D_025,0,High-Exposure Well-Prepared
-D_026,0,High-Exposure Well-Prepared
-D_027,3,High-Vulnerability Low-Capacity
-D_028,1,High-Exposure Well-Prepared
-D_029,1,High-Exposure Well-Prepared
-D_030,3,High-Vulnerability Low-Capacity
-D_031,0,High-Exposure Well-Prepared
-D_032,3,High-Vulnerability Low-Capacity
-D_033,0,High-Exposure Well-Prepared
-D_034,2,Low-Risk Well-Prepared
-D_035,3,High-Vulnerability Low-Capacity
-D_036,2,Low-Risk Well-Prepared
-D_037,2,Low-Risk Well-Prepared
-D_038,2,Low-Risk Well-Prepared
-D_039,3,High-Vulnerability Low-Capacity
-D_040,2,Low-Risk Well-Prepared
-D_041,0,High-Exposure Well-Prepared
-D_042,3,High-Vulnerability Low-Capacity
-D_043,0,High-Exposure Well-Prepared
-D_044,2,Low-Risk Well-Prepared
-D_045,0,High-Exposure Well-Prepared
-D_046,2,Low-Risk Well-Prepared
-D_047,3,High-Vulnerability Low-Capacity
-D_048,3,High-Vulnerability Low-Capacity
-D_049,3,High-Vulnerability Low-Capacity
-D_050,2,Low-Risk Well-Prepared
-D_051,2,Low-Risk Well-Prepared
-D_052,3,High-Vulnerability Low-Capacity
-D_053,0,High-Exposure Well-Prepared
-D_054,3,High-Vulnerability Low-Capacity
-D_055,0,High-Exposure Well-Prepared
-D_056,2,Low-Risk Well-Prepared
-D_057,2,Low-Risk Well-Prepared
-D_058,1,High-Exposure Well-Prepared
-D_059,1,High-Exposure Well-Prepared
-D_060,1,High-Exposure Well-Prepared
-D_061,2,Low-Risk Well-Prepared
-D_062,3,High-Vulnerability Low-Capacity
-D_063,3,High-Vulnerability Low-Capacity
-D_064,2,Low-Risk Well-Prepared
-D_065,3,High-Vulnerability Low-Capacity
-D_066,2,Low-Risk Well-Prepared
-D_067,1,High-Exposure Well-Prepared
-D_068,1,High-Exposure Well-Prepared
-D_069,2,Low-Risk Well-Prepared
-D_070,2,Low-Risk Well-Prepared
-D_071,0,High-Exposure Well-Prepared
-D_072,0,High-Exposure Well-Prepared
-D_073,3,High-Vulnerability Low-Capacity
-D_074,0,High-Exposure Well-Prepared
-D_075,2,Low-Risk Well-Prepared
-D_076,2,Low-Risk Well-Prepared
-D_077,1,High-Exposure Well-Prepared
-D_078,2,Low-Risk Well-Prepared
-D_079,1,High-Exposure Well-Prepared
-D_080,1,High-Exposure Well-Prepared
-D_081,0,High-Exposure Well-Prepared
-D_082,0,High-Exposure Well-Prepared
-D_083,0,High-Exposure Well-Prepared
-D_084,3,High-Vulnerability Low-Capacity
-D_085,0,High-Exposure Well-Prepared
-D_086,1,High-Exposure Well-Prepared
-D_087,1,High-Exposure Well-Prepared
-D_088,1,High-Exposure Well-Prepared
-D_089,1,High-Exposure Well-Prepared
-D_090,1,High-Exposure Well-Prepared
-D_091,0,High-Exposure Well-Prepared
-D_092,3,High-Vulnerability Low-Capacity
-D_093,3,High-Vulnerability Low-Capacity
-D_094,2,Low-Risk Well-Prepared
-D_095,2,Low-Risk Well-Prepared
-D_096,1,High-Exposure Well-Prepared
-D_097,2,Low-Risk Well-Prepared
-D_098,3,High-Vulnerability Low-Capacity
-D_099,1,High-Exposure Well-Prepared
-D_100,3,High-Vulnerability Low-Capacity
+District,Cluster,Cluster_Label,Policy_Quadrant,PCA_1,PCA_2
+D_001,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.3948695385705037,0.5335511512243202
+D_002,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),2.1599100656196257,-1.4731453548161424
+D_003,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.20532148856621935,-0.5740398243261278
+D_004,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-1.8257913466861604,-1.104452215315667
+D_005,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.35794153084699926,-0.9888839069118337
+D_006,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),0.9365362255561407,1.8172894254243404
+D_007,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-0.8263478640664523,-0.6062592167747963
+D_008,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),0.24869006931656093,-0.2567526629912773
+D_009,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.04979279826807528,0.8528330660615941
+D_010,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),1.0238197528870907,1.3204401180941723
+D_011,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-0.553748683779906,-1.661160957742922
+D_012,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),0.07124246695152853,-0.6686222809431356
+D_013,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.6153519988597966,-1.898689644088868
+D_014,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.2073596445378474,0.02361285171608941
+D_015,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.1121696659852587,0.5163746497842943
+D_016,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.6743930896424015,0.5481342971760876
+D_017,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),0.240004796704185,-0.34807943519607154
+D_018,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-1.2293576733505762,0.6048206978369134
+D_019,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),-0.9994852844309244,0.3443212033859629
+D_020,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),-0.16294329229007604,0.5916756723389525
+D_021,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),1.520165571773207,-1.0942960715125873
+D_022,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),0.08041859891123503,-1.2291338107376113
+D_023,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),0.8960154217091072,-0.0586752205348985
+D_024,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.03905483055910859,-1.8624893059808747
+D_025,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),0.6743990383741216,1.5718374391120356
+D_026,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.062480607097247676,0.11790800352219688
+D_027,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.9445994184315559,0.15834647566954738
+D_028,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),0.05234102305446757,0.7547718062689841
+D_029,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.2202184455460336,0.7507959662080144
+D_030,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-1.9318768497351797,0.1879590089026032
+D_031,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.5523279780698072,-0.21012839219118476
+D_032,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-0.8396751591362508,-2.009528612836443
+D_033,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),1.334368642329484,-0.47552735020118314
+D_034,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.7609157384967702,-1.0047496815345531
+D_035,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-2.3038018321737193,-0.6468124909595877
+D_036,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-0.32873340524379796,-0.9934603262524142
+D_037,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.63860920914156,-1.0142198058545626
+D_038,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.31900463776683724,-0.6453663928267199
+D_039,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-2.2398220129405457,0.039828970566577325
+D_040,3,Low-Risk Well-Prepared,High Risk - High Preparedness (Priority 2),1.2821070311481368,0.5504663455898126
+D_041,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.2362530432673577,0.45669601471982496
+D_042,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-0.6318236364772639,-2.1118137713889062
+D_043,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),2.1528210135811956,0.09950223196086277
+D_044,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.6061587445481557,-1.472488204974106
+D_045,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),0.7029531850264151,0.10480149860849904
+D_046,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-0.2536113977670389,-0.17173114404473822
+D_047,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.47100274735117453,0.2722174054427941
+D_048,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-1.6743271252779177,0.43772601270601985
+D_049,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-2.732337727763317,-0.033345784617184356
+D_050,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.6258371435678574,0.009880216014283984
+D_051,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),0.6922592762851514,-1.3950177171333074
+D_052,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-1.0246892120194142,-1.1105953678254363
+D_053,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),0.9133280684009932,-0.5723203914614641
+D_054,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.6856640370665876,-0.4253867827848038
+D_055,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),1.4120997867124123,2.0864970626024815
+D_056,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),1.8141596717770807,-0.35470065463555445
+D_057,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-0.09754190546507893,-0.5167357636679376
+D_058,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),0.17252514777939557,2.1667550265175692
+D_059,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),-0.7121279314692471,1.095587870242102
+D_060,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),-0.029019859197773078,1.257454424569897
+D_061,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),2.020104357626572,-1.6243608285325004
+D_062,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.7946401124618139,-0.900614899340163
+D_063,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.3028576151403458,-0.386833845409718
+D_064,3,Low-Risk Well-Prepared,High Risk - Low Preparedness (Priority 1),0.7990051391663022,-0.3535660707495018
+D_065,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-2.1533054207003834,0.4821855959917581
+D_066,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-0.42161836676494124,-0.24714741736191806
+D_067,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),0.8135307966346506,0.7092904041541186
+D_068,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),-0.08272797439714438,1.847425078166583
+D_069,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-1.1155647688961823,-0.2569271601136143
+D_070,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.0696398944029279,0.04179587154135696
+D_071,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.1775958490732545,-0.16169374749319565
+D_072,0,High-Exposure Well-Prepared,Low Risk - High Preparedness (Priority 4),0.26275400887814626,-0.40415893610949005
+D_073,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-1.83988118829067,-0.7413489646076793
+D_074,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),0.9718679640740923,1.7223830708257404
+D_075,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.6820570686559695,-1.765895407223549
+D_076,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),0.3157932251562123,-0.2834896772275158
+D_077,1,High-Exposure Low-Capacity,High Risk - High Preparedness (Priority 2),0.5276124173947638,1.4367862069129684
+D_078,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),-0.2457130209037892,-0.2799170983105414
+D_079,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-1.3050723624854015,1.5471320951525278
+D_080,1,High-Exposure Low-Capacity,Low Risk - Low Preparedness (Priority 3),-0.6285399071566198,0.7662006762310419
+D_081,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.69430385533913,-0.045464853964527915
+D_082,0,High-Exposure Well-Prepared,High Risk - Low Preparedness (Priority 1),1.1949570603565456,-0.4788761450456615
+D_083,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),0.13141053859336357,0.9947847057931839
+D_084,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-1.5398269439580827,0.0027158323107803342
+D_085,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),0.5399657554422004,0.6567850972485691
+D_086,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.17767333328084325,1.2370954659203555
+D_087,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.7424508422429302,0.8028486936727647
+D_088,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),0.9260227790193526,1.3659481893084469
+D_089,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),0.49694212324367343,1.0222808424897936
+D_090,1,High-Exposure Low-Capacity,Low Risk - High Preparedness (Priority 4),-1.1866426719805256,2.325281058823063
+D_091,0,High-Exposure Well-Prepared,High Risk - High Preparedness (Priority 2),1.016340543009977,0.6285519477121359
+D_092,2,High-Vulnerability Low-Capacity,Low Risk - High Preparedness (Priority 4),-0.6379064346557998,-0.487815074667328
+D_093,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-1.6267916912242852,-2.1426057533492977
+D_094,3,Low-Risk Well-Prepared,Low Risk - Low Preparedness (Priority 3),-0.1593701695159215,-1.340351011659295
+D_095,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),-0.572574442441121,-0.669716516462578
+D_096,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.5348391133367473,1.1214554365333154
+D_097,3,Low-Risk Well-Prepared,Low Risk - High Preparedness (Priority 4),0.9806358163215598,0.03739210757290304
+D_098,2,High-Vulnerability Low-Capacity,High Risk - Low Preparedness (Priority 1),-3.3076752999475105,0.7935090246651579
+D_099,1,High-Exposure Low-Capacity,High Risk - Low Preparedness (Priority 1),-0.5753201513898655,2.5179826661291855
+D_100,2,High-Vulnerability Low-Capacity,Low Risk - Low Preparedness (Priority 3),-2.153817267378032,0.22747697126839522

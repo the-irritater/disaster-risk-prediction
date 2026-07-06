@@ -111,13 +111,23 @@ def construct_risk_index(df, fit_scalers=None):
         0.20 * df_scores["Preparedness_Deficit_Score"]
     )
     
-    # Define Risk Categories
+    # Define Risk Categories based on quantile thresholds
+    if fit_scalers is None or "risk_thresholds" not in fit_scalers:
+        q25 = float(df_scores["Disaster_Risk_Score"].quantile(0.25))
+        q50 = float(df_scores["Disaster_Risk_Score"].quantile(0.50))
+        q75 = float(df_scores["Disaster_Risk_Score"].quantile(0.75))
+        scalers["risk_thresholds"] = {"q25": q25, "q50": q50, "q75": q75}
+    else:
+        q25 = fit_scalers["risk_thresholds"]["q25"]
+        q50 = fit_scalers["risk_thresholds"]["q50"]
+        q75 = fit_scalers["risk_thresholds"]["q75"]
+        
     def assign_category(score):
-        if score < 35.0:
+        if score <= q25:
             return "Low"
-        elif score < 50.0:
+        elif score <= q50:
             return "Moderate"
-        elif score < 65.0:
+        elif score <= q75:
             return "High"
         else:
             return "Critical"

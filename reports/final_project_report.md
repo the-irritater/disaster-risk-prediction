@@ -1,18 +1,18 @@
-# Disaster Risk Prediction Dashboard — Final Project Report
+# Disaster Risk Prediction Analytics Framework — Final Project Report
 
 ## Metadata
 
 | Field | Value |
 | --- | --- |
 | **Report Title** | Project Summary & Analytical Report |
-| **Project** | Disaster Risk Prediction Dashboard |
+| **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.0 |
+| **Version** | 3.1 |
 | **Status** | Research Submission (Simulation-Based) |
 
 
-> **Simulation-Based Analytics Prototype**
+> **Simulation-Based Analytics Framework Prototype**
 >
 > This project uses entirely synthetic data generated with a fixed random seed (42).
 > All numerical findings demonstrate an analytical and modelling workflow. They must
@@ -27,15 +27,15 @@ This report documents a complete disaster risk analytics pipeline covering synth
 data generation, data validation, spatial analysis, descriptive risk indexing,
 statistical hypothesis testing, predictive modelling (classification and regression),
 model explainability (SHAP), and district clustering. All analytical outputs are
-exported to a Power BI star-schema dashboard.
+exported for Power BI star-schema analysis.
 
 **Key findings** (all conditional on the synthetic data-generating process):
 
-- Regional risk scores do **not** differ significantly across regions (F(4, 95) = 0.72, p = 0.583, η² = 0.029)
-- Annual disaster counts show a **decreasing** trend (S = -8, p = 0.586)
-- The XGBoost classifier achieves ROC-AUC = 0.7537 [0.7239, 0.7852] on the held-out test set
-- Economic loss prediction achieves R² = 0.1568 on disaster-event test data
-- Districts cluster into 4 recommended risk typologies (operational k=4, silhouette = 0.2249)
+- Regional risk scores do **not** differ significantly across regions (F(4, 95) = 0.65, p = 0.632, η² = 0.026)
+- Annual disaster counts show a **decreasing** trend (S = -18, p = 0.184)
+- The XGBoost classifier achieves ROC-AUC = 0.8587 [0.8273, 0.8888] on the held-out test set
+- Economic loss prediction achieves R² = 0.1693 on disaster-event test data
+- Districts cluster into 4 recommended risk typologies (operational k=4, silhouette = 0.2236)
 
 ---
 
@@ -71,9 +71,10 @@ The dataset is a balanced district-month panel:
 | Districts | 100 |
 | Time span | January 2015 – December 2025 |
 | Rows | 13,200 |
-| Variables | ~36 |
-| Disaster Prevalence (contemporaneous) | ~12.0% of district-months |
-| Target Prevalence (Disaster_Next_Month) | ~20.8% of usable training months |
+| Raw Variables | 61 |
+| Cleaned Variables | 72 |
+| Disaster Prevalence (contemporaneous) | 15.42% |
+| Target Prevalence (Disaster_Next_Month) | 15.56% (Training) |
 
 ### 2.2 Variable Categories
 
@@ -89,8 +90,11 @@ The dataset is a balanced district-month panel:
 
 ### 2.3 Data Quality
 
-No missing values, no duplicate records, no impossible values detected. IQR-flagged
-outliers in Hazard_Severity and Wind_Speed represent genuine extreme events and are retained.
+We calculate data quality metrics dynamically from the dataset:
+- **Missing values**: 0 null entries detected.
+- **Duplicate records**: 0 duplicate rows found.
+
+IQR-flagged outliers in `Hazard_Severity` and `Wind_Speed_kmph` represent genuine extreme events and are retained.
 
 ---
 
@@ -108,7 +112,7 @@ Low / Medium / High / Critical risk based on quartile boundaries.
 ### 3.2 Sensitivity Analysis
 
 Comparing expert weights to equal weights (0.25 each):
-- Spearman rank correlation: ρ = 0.9881 (p = 1.44e-81)
+- Spearman rank correlation: ρ = 0.9892 (p = 1.37e-83)
 - Interpretation: District risk rankings are highly stable across weight specifications.
 
 > **Note**: High correlation between the risk score and its components is expected because
@@ -122,28 +126,28 @@ Comparing expert weights to equal weights (0.25 each):
 ### 4.1 ANOVA: Regional Risk Differences
 
 Aggregated to district means (N = 100):
-- F(4, 95) = 0.7166, p = 0.583
-- η² = 0.0293 (2.9% of between-district variance)
+- F(4, 95) = 0.6452, p = 0.632
+- η² = 0.0264 (2.6% of between-district variance)
 - Regional risk scores do **not** differ significantly across regions.
 
 ### 4.2 Chi-Square: Region × Risk Category (Permutation Test)
 
 Aggregated to district-level modal categories (N = 100):
-- χ²(8) = 5.4939, permutation p = 0.8578
-- Cramér's V = 0.1657 (small to moderate association)
+- χ²(12) = 7.2341, permutation p = 0.8532
+- Cramér's V = 0.1553 (small to moderate association)
 - Region and risk category are **not** significantly associated.
 
 ### 4.3 Mann–Kendall Trend Test
 
 Annual disaster counts (N = 11 years):
-- S = -8, τ = -0.1455, p = 0.586
-- Sen's slope = -1.0000 events/year → **decreasing** trend
+- S = -18, τ = -0.3273, p = 0.184
+- Sen's slope = -1.3333 events/year → **decreasing** trend
 - *Note*: Test power is low (~30-40%) due to small annual sample size (N=11).
 
 ### 4.4 OLS Regression for Economic Loss
 
-Event-only months (N = 2764), cluster-robust SEs by district:
-- R² = 0.2468, Adjusted R² = 0.2455
+Event-only months (N = 2036), cluster-robust SEs by district:
+- R² = 0.3015, Adjusted R² = 0.2998
 - Standard errors: cluster-robust (by district)
 
 ### 4.5 Spatial Autocorrelation
@@ -165,43 +169,43 @@ spatial structure.
 
 | Partition | Period | N | % | Prevalence |
 | --- | --- | --- | --- | --- |
-| Train | 2015-01 to 2022-12 | 9,600 | 73.3% | 0.2083 |
-| Validation | 2023-01 to 2024-12 | 2,400 | 18.3% | 0.2100 |
-| Test | 2025-01 to 2025-11 | 1,100 | 8.4% | 0.2273 |
+| Train | 2015-01 to 2022-12 | 9,600 | 73.3% | 0.1556 |
+| Validation | 2024-01 to 2024-12 | 1,200 | 9.2% | 0.1467 |
+| Test | 2025-01 to 2025-11 | 1,100 | 8.4% | 0.1591 |
 
 **Selected model**: XGBoost (best validation PR-AUC)
-**Threshold**: 0.1799 (optimised for ≥ 75% recall on validation)
+**Threshold**: 0.1708 (optimised for ≥ 75% recall on validation)
 
 **Test-set performance**:
 
 | Metric | Value | 95% CI |
 | --- | --- | --- |
-| ROC-AUC | 0.7537 | [0.7239, 0.7852] |
-| PR-AUC | 0.5289 | [0.4741, 0.5833] |
-| Recall | 0.7680 | [0.7255, 0.8161] |
-| Precision | 0.3556 | [0.3229, 0.3916] |
-| F1 | 0.4861 | [0.4518, 0.5216] |
+| ROC-AUC | 0.8587 | [0.8273, 0.8888] |
+| PR-AUC | 0.5876 | [0.5085, 0.6671] |
+| Recall | 0.8114 | [0.7443, 0.8753] |
+| Precision | 0.3880 | [0.3426, 0.4328] |
+| F1 | 0.5250 | [0.4769, 0.5688] |
 
 **Confusion matrix** (test set):
 
 |  | Pred. Neg | Pred. Pos |
 | --- | --- | --- |
-| **Act. Neg** | 502 | 348 |
-| **Act. Pos** | 58 | 192 |
+| **Act. Neg** | 701 | 224 |
+| **Act. Pos** | 33 | 142 |
 
-**Calibration**: Brier = 0.1621 vs null = 0.1756 → BSS = 0.0771 (Interpretation: weak (<0.10) calibration skill).
+**Calibration**: Brier = 0.0937 vs null = 0.1338 → BSS = 0.2998 (Interpretation: skillful (>=0.25) calibration skill).
 
 ### 5.2 Regression: Conditional Economic Loss
 
-**Selected model**: Ridge (simple linear Ridge model selected over tree ensembles to prevent validation overfitting)
-**Event counts**: Train 2008, Val 499, Test 254
+**Selected model**: Tweedie GLM (simple linear Ridge model selected over tree ensembles to prevent validation overfitting)
+**Event counts**: Train 1494, Val 362, Test 180
 
 | Metric | Validation | Test |
 | --- | --- | --- |
-| R² | 0.1956 | 0.1568 |
-| RMSE | 516.3848 | 543.6151 |
-| MAE | 347.2861 | 374.5071 |
-| MdAPE (%) | 54.8% | 61.9% |
+| R² | 0.1940 | 0.1693 |
+| RMSE | 513.1162 | 522.5115 |
+| MAE | 321.7107 | 357.3308 |
+| MdAPE (%) | 50.1% | 58.5% |
 
 ---
 
@@ -213,29 +217,29 @@ Top predictive features by mean |SHAP| value (model reliance, not causal effects
 
 | Rank | Feature | Mean |SHAP| |
 | --- | --- | --- |
-| 1 | Season_Spring | 0.6791 |
-| 2 | Distance_From_Coast_km | 0.6514 |
-| 3 | Season_Winter | 0.4068 |
-| 4 | River_Level_Metres | 0.3574 |
-| 5 | Previous_Month_Hazard_Severity | 0.3330 |
-| 6 | Wind_Speed_kmph | 0.2990 |
-| 7 | Rainfall_Anomaly | 0.2777 |
-| 8 | Vegetation_Index | 0.2279 |
-| 9 | Drought_Index | 0.2045 |
-| 10 | Population_Density | 0.1983 |
+| 1 | Distance_From_Coast_km | 0.6016 |
+| 2 | Season_Spring | 0.5497 |
+| 3 | Season_Winter | 0.1737 |
+| 4 | Temperature_Anomaly | 0.1652 |
+| 5 | Rainfall_Anomaly | 0.1632 |
+| 6 | Population_Density | 0.1356 |
+| 7 | Drought_Index | 0.0931 |
+| 8 | Wind_Speed_kmph | 0.0772 |
+| 9 | Season_Monsoon | 0.0727 |
+| 10 | Previous_Month_Hazard_Severity | 0.0647 |
 
 ### 6.2 District Clustering (k=4 Recommended)
 
 K-Means clustering on standardised district profiles (Hazard, Exposure, Vulnerability, Preparedness):
-- Best k (silhouette): 7 (silhouette = 0.2409)
+- Best k (silhouette): 7 (silhouette = 0.2374)
 - Recommended operational k: 4 (more balanced cluster sizes)
 - Silhouette warning: All configurations have silhouette < 0.25, indicating weak separation.
 
 ---
 
-## 7. Dashboard Design
+## 7. Power BI Integration Structure
 
-The Power BI dashboard uses a star schema with:
+The Power BI star schema includes:
 
 | Table | Type | Rows | Purpose |
 | --- | --- | --- | --- |
@@ -243,9 +247,9 @@ The Power BI dashboard uses a star schema with:
 | DimGeography | Dimension | 100 | District attributes (includes cluster labels) |
 | DimDisasterType | Dimension | ~6 | Hazard taxonomy |
 | FactDistrictMonthRisk | Fact | 13,200 | Risk scores, predictions |
-| FactDisasterEvents | Fact | 2761 | Post-event impacts (event-months only) |
+| FactDisasterEvents | Fact | 2036 | Post-event impacts (event-months only) |
 
-**Key dashboard pages**:
+**Recommended report views**:
 1. **Regional Risk Overview** — Choropleth map, risk distribution, regional comparisons
 2. **Temporal Trends** — Annual/seasonal disaster patterns, Mann–Kendall trend overlay
 3. **Prediction Performance** — Model metrics, confusion matrix, calibration plot

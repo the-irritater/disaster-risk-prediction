@@ -1,11 +1,11 @@
-# Disaster Risk Prediction Dashboard
+# Disaster Risk Prediction Analytics Framework
 
 | Field | Value |
 | --- | --- |
-| **Project** | Disaster Risk Prediction Dashboard |
+| **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.0 |
+| **Version** | 3.1 |
 | **Status** | Research Submission (Simulation-Based) |
 
 > **Simulation-based analytics prototype.** This project uses entirely synthetic data

@@ -5,10 +5,10 @@
 | Field | Value |
 | --- | --- |
 | **Report Title** | Statistical Analysis & Hypothesis Testing |
-| **Project** | Disaster Risk Prediction Dashboard |
+| **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.0 |
+| **Version** | 3.1 |
 | **Status** | Research Submission (Simulation-Based) |
 
 
@@ -28,27 +28,27 @@ violating the independence assumption that ANOVA requires.
 - H₀: μ₁ = μ₂ = … = μ₅ (all regions have the same mean district risk score)
 - H₁: At least one region differs
 
-**Levene's test for homogeneity of variance**: W = 0.0693, p = 0.991
+**Levene's test for homogeneity of variance**: W = 0.0414, p = 0.997
 
 **ANOVA type**: Standard
 
 | Statistic | Value |
 | --- | --- |
-| F(4, 95) | 0.7166 |
-| p-value | 0.583 |
-| η² (eta-squared) | 0.0293 |
+| F(4, 95) | 0.6452 |
+| p-value | 0.632 |
+| η² (eta-squared) | 0.0264 |
 
 **Group statistics**:
 
 | Region | N districts | Mean risk score | SD |
 | --- | --- | --- | --- |
-| Central | 20 | 35.04 | 6.84 |
-| East | 20 | 34.76 | 6.32 |
-| North | 20 | 36.38 | 6.41 |
-| South | 20 | 35.08 | 6.66 |
-| West | 20 | 37.73 | 6.81 |
+| Central | 20 | 35.30 | 6.95 |
+| East | 20 | 34.99 | 6.41 |
+| North | 20 | 36.48 | 6.39 |
+| South | 20 | 35.39 | 6.70 |
+| West | 20 | 37.89 | 6.74 |
 
-**Interpretation**: Regional risk scores do **not** differ significantly across regions (p = 0.583). The effect size η² = 0.0293 indicates that approximately 2.9% of the between-district variance in risk scores is associated with region membership.
+**Interpretation**: Regional risk scores do **not** differ significantly across regions (p = 0.632). The effect size η² = 0.0264 indicates that approximately 2.6% of the between-district variance in risk scores is associated with region membership.
 **Post-hoc comparison**: Since the overall F-test is non-significant, no post-hoc comparisons (e.g., Tukey's HSD) are warranted.
 
 ---
@@ -65,24 +65,24 @@ Each district is assigned the risk category that occurs most frequently across i
 
 **Contingency table**:
 
-| Region | High | Low | Moderate |
-| --- | --- | --- | --- |
-| Central | 0 | 11 | 9 |
-| East | 0 | 12 | 8 |
-| North | 0 | 9 | 11 |
-| South | 0 | 9 | 11 |
-| West | 1 | 9 | 10 |
+| Region | Critical | High | Low | Moderate |
+| --- | --- | --- | --- | --- |
+| Central | 4 | 4 | 6 | 6 |
+| East | 3 | 5 | 6 | 6 |
+| North | 5 | 6 | 5 | 4 |
+| South | 5 | 5 | 7 | 3 |
+| West | 8 | 3 | 3 | 6 |
 
 | Statistic | Value |
 | --- | --- |
-| χ²(8) | 5.4939 |
-| Permutation p-value (9999 shuffles) | 0.8578 |
-| Cramér's V | 0.1657 (small to moderate) |
-| Min expected frequency | 0.20 |
-| Cells with expected < 5 | 33.3% |
+| χ²(12) | 7.2341 |
+| Permutation p-value (9999 shuffles) | 0.8532 |
+| Cramér's V | 0.1553 (small to moderate) |
+| Min expected frequency | 4.60 |
+| Cells with expected < 5 | 25.0% |
 
-**Interpretation**: The association is not significant (permutation p = 0.8578). Cramér's V = 0.1657 indicates a small to moderate association.
-**Methodological Safeguard Warning**: 33.3% of expected cell frequencies are below 5 (minimum expected frequency is 0.2), violating standard chi-square asymptotic assumptions. Therefore, the traditional chi-square approximation is **invalid**. The reported p-value is computed via Monte Carlo permutation (shuffling risk categories across regions), which is distribution-free and statistically rigorous under small expected cell frequencies.
+**Interpretation**: The association is not significant (permutation p = 0.8532). Cramér's V = 0.1553 indicates a small to moderate association.
+**Methodological Safeguard Warning**: 25.0% of expected cell frequencies are below 5 (minimum expected frequency is 4.6), violating standard chi-square asymptotic assumptions. Therefore, the traditional chi-square approximation is **invalid**. The reported p-value is computed via Monte Carlo permutation (shuffling risk categories across regions), which is distribution-free and statistically rigorous under small expected cell frequencies.
 
 ---
 
@@ -92,30 +92,30 @@ Each district is assigned the risk category that occurs most frequently across i
 
 | Year | Disaster count |
 | --- | --- |
-| 2015 | 260 |
-| 2016 | 267 |
-| 2017 | 254 |
-| 2018 | 263 |
-| 2019 | 245 |
-| 2020 | 227 |
-| 2021 | 245 |
-| 2022 | 247 |
-| 2023 | 248 |
-| 2024 | 251 |
-| 2025 | 257 |
+| 2015 | 189 |
+| 2016 | 205 |
+| 2017 | 171 |
+| 2018 | 188 |
+| 2019 | 182 |
+| 2020 | 193 |
+| 2021 | 179 |
+| 2022 | 187 |
+| 2023 | 187 |
+| 2024 | 175 |
+| 2025 | 180 |
 
 | Statistic | Value |
 | --- | --- |
-| Mann–Kendall S | -8 |
-| Kendall τ | -0.1455 |
-| z-statistic | -0.5449 |
-| p-value (two-sided) | 0.586 |
-| Sen's slope | -1.0000 events/year |
+| Mann–Kendall S | -18 |
+| Kendall τ | -0.3273 |
+| z-statistic | -1.3275 |
+| p-value (two-sided) | 0.184 |
+| Sen's slope | -1.3333 events/year |
 | Direction | **decreasing** |
 
-**Interpretation**: The Mann–Kendall S = -8 is negative, indicating a decreasing monotonic trend.
-Sen's slope of -1.0000 events/year estimates the median annual change in disaster count.
-The trend is not statistically significant at the 0.05 level (p = 0.586).
+**Interpretation**: The Mann–Kendall S = -18 is negative, indicating a decreasing monotonic trend.
+Sen's slope of -1.3333 events/year estimates the median annual change in disaster count.
+The trend is not statistically significant at the 0.05 level (p = 0.184).
 
 > **Limitation & Power Warning**: With only 11 annual observations, this test is highly underpowered (~30–40% power to detect moderate trends). A non-significant result should not be interpreted as definitive evidence that no underlying trend exists.
 
@@ -123,7 +123,7 @@ The trend is not statistically significant at the 0.05 level (p = 0.586).
 
 ## 4. Predictors of Economic Loss (Cluster-Robust OLS Regression)
 
-**Unit of analysis**: District-months where a disaster occurred (N = 2764 events).
+**Unit of analysis**: District-months where a disaster occurred (N = 2036 events).
 Standard errors are clustered by district to account for within-district correlation.
 
 **Formula**: `Economic_Loss_Million ~ Hazard_Severity + Population_Density + Infrastructure_Density + Poverty_Rate + Preparedness_Score`
@@ -132,9 +132,9 @@ Standard errors are clustered by district to account for within-district correla
 
 | Statistic | Value |
 | --- | --- |
-| R² | 0.2468 |
-| Adjusted R² | 0.2455 |
-| F-statistic | 56.7315 |
+| R² | 0.3015 |
+| Adjusted R² | 0.2998 |
+| F-statistic | 53.5850 |
 | F p-value | < 0.001 |
 | SE type | cluster-robust (by district) |
 
@@ -142,24 +142,24 @@ Standard errors are clustered by district to account for within-district correla
 
 | Variable | β | SE (cluster) | 95% CI | p |
 | --- | --- | --- | --- | --- |
-| Intercept | -363.7209 | 83.7612 | [-527.8898, -199.5520] | < 0.001 |
-| Hazard_Severity | 70.2233 | 4.6498 | [61.1098, 79.3368] | < 0.001 |
-| Population_Density | -0.0021 | 0.0132 | [-0.0280, 0.0238] | 0.874 |
-| Infrastructure_Density | 12.2549 | 0.9435 | [10.4057, 14.1041] | < 0.001 |
-| Poverty_Rate | 43.5536 | 166.2425 | [-282.2757, 369.3829] | 0.793 |
-| Preparedness_Score | -3.3736 | 1.0826 | [-5.4956, -1.2517] | 0.0018 |
+| Intercept | -340.0198 | 78.3667 | [-493.6158, -186.4239] | < 0.001 |
+| Hazard_Severity | 72.0135 | 5.1608 | [61.8985, 82.1285] | < 0.001 |
+| Population_Density | -0.0117 | 0.0094 | [-0.0301, 0.0068] | 0.214 |
+| Infrastructure_Density | 12.1214 | 1.0658 | [10.0325, 14.2103] | < 0.001 |
+| Poverty_Rate | -9.7827 | 128.7602 | [-262.1481, 242.5827] | 0.939 |
+| Preparedness_Score | -3.3509 | 1.0149 | [-5.3401, -1.3617] | < 0.001 |
 
 **Variance Inflation Factors (VIF)**:
 
 | Variable | VIF |
 | --- | --- |
-| Hazard_Severity | 1.02 |
-| Population_Density | 1.11 |
-| Infrastructure_Density | 1.09 |
-| Poverty_Rate | 1.07 |
-| Preparedness_Score | 1.10 |
+| Hazard_Severity | 1.06 |
+| Population_Density | 1.20 |
+| Infrastructure_Density | 1.08 |
+| Poverty_Rate | 1.08 |
+| Preparedness_Score | 1.08 |
 
-**Interpretation**: The model explains 24.7% of the variance in economic loss
+**Interpretation**: The model explains 30.1% of the variance in economic loss
 among disaster-event months. Cluster-robust standard errors account for the non-independence
 of repeated events within the same district.
 
@@ -175,10 +175,10 @@ Inference: Permutation test (999 randomisations).
 
 | Specification | Moran's I | z-score | p (permutation) |
 | --- | --- | --- | --- |
-| k=3 | 0.8031 | 10.81 | < 0.001 |
-| k=4 | 0.7824 | 11.81 | < 0.001 |
-| k=5 | 0.7926 | 13.81 | < 0.001 |
-| k=8 | 0.7662 | 16.67 | < 0.001 |
+| k=3 | 0.7087 | 9.70 | < 0.001 |
+| k=4 | 0.6767 | 10.49 | < 0.001 |
+| k=5 | 0.6673 | 11.91 | < 0.001 |
+| k=8 | 0.6590 | 14.56 | < 0.001 |
 
 **Interpretation**: Moran's I is consistently positive across k-specifications, indicating positive spatial autocorrelation (nearby districts tend to have similar disaster rates). This spatial pattern was embedded in the synthetic data generator and its recovery validates the simulation design.
 

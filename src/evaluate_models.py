@@ -8,6 +8,27 @@ from sklearn.metrics import (
 )
 from sklearn.calibration import calibration_curve
 
+def calculate_ece(y_true, y_prob, n_bins=10):
+    """
+    Computes the Expected Calibration Error (ECE).
+    """
+    bin_boundaries = np.linspace(0, 1, n_bins + 1)
+    ece = 0.0
+    n = len(y_true)
+    for i in range(n_bins):
+        bin_lower = bin_boundaries[i]
+        bin_upper = bin_boundaries[i + 1]
+        
+        in_bin = (y_prob >= bin_lower) & (y_prob < bin_upper)
+        prop_in_bin = np.mean(in_bin)
+        
+        if prop_in_bin > 0:
+            accuracy_in_bin = np.mean(y_true[in_bin])
+            avg_confidence_in_bin = np.mean(y_prob[in_bin])
+            ece += prop_in_bin * np.abs(avg_confidence_in_bin - accuracy_in_bin)
+            
+    return float(ece)
+
 def calculate_classification_metrics(y_true, y_prob, threshold=0.5):
     """
     Computes a comprehensive dictionary of classification metrics.
@@ -39,6 +60,8 @@ def calculate_classification_metrics(y_true, y_prob, threshold=0.5):
     denom = np.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
     mcc = (tp * tn - fp * fn) / denom if denom > 0 else 0.0
     
+    ece = calculate_ece(y_true, y_prob)
+    
     return {
         "confusion_matrix": cm.tolist(),
         "accuracy": float(accuracy),
@@ -50,7 +73,8 @@ def calculate_classification_metrics(y_true, y_prob, threshold=0.5):
         "pr_auc": float(pr_auc),
         "brier_score": float(brier),
         "balanced_accuracy": float(balanced_acc),
-        "mcc": float(mcc)
+        "mcc": float(mcc),
+        "ece": float(ece)
     }
 
 def calculate_regression_metrics(y_true, y_pred):

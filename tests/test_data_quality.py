@@ -53,3 +53,12 @@ def test_zero_impact_on_non_event():
                    
     for col in impact_cols:
         assert (non_event_df[col] == 0).all(), f"Found non-zero values in {col} when no disaster occurred"
+
+def test_no_disaster_type_missing_values():
+    """
+    Verifies that Disaster_Type has no missing values and contains 'No Disaster'.
+    """
+    generator = DisasterDataGenerator(seed=42)
+    df = generator.generate_panel_data()
+    assert df["Disaster_Type"].notna().all(), "Disaster_Type should not contain NaN values"
+    assert "No Disaster" in df["Disaster_Type"].unique(), "'No Disaster' should be a category in Disaster_Type"

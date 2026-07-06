@@ -1,1 +1,1 @@
-# Disaster Risk Prediction Dashboard source package
+# Disaster Risk Prediction Analytics Framework source package

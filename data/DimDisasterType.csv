@@ -1,11 +1,10 @@
 DisasterTypeKey,Disaster_Type
-1,None
-2,
-3,Severe Storm
-4,Landslide
-5,Flood
-6,Wildfire
-7,Drought
-8,Heatwave
-9,Cyclone
-10,Earthquake
+1,No Disaster
+2,Severe Storm
+3,Landslide
+4,Flood
+5,Drought
+6,Earthquake
+7,Heatwave
+8,Cyclone
+9,Wildfire

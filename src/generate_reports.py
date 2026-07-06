@@ -13,8 +13,8 @@ import json
 import os
 
 AUTHOR = "Sanman"
-PROJECT = "Disaster Risk Prediction Dashboard"
-VERSION = "3.0"
+PROJECT = "Disaster Risk Prediction Analytics Framework"
+VERSION = "3.1"
 
 def load_json(path):
     with open(path, 'r') as f:
@@ -450,7 +450,7 @@ SHAP values indicate the model's reliance on each feature for prediction. Higher
     return report
 
 
-def generate_final_report(stat, spatial, clf, reg, cluster, sensitivity):
+def generate_final_report(stat, spatial, clf, reg, cluster, sensitivity, missing_count, duplicate_count, raw_cols_count, clean_cols_count):
     """Generate final_project_report.md with consistent numbers from all sources."""
     a = stat['anova']
     c = stat.get('permutation_chi_square', stat.get('chi_square'))
@@ -467,13 +467,13 @@ def generate_final_report(stat, spatial, clf, reg, cluster, sensitivity):
     chi_sig_term = "are significantly associated" if c.get('p_value_permutation', c.get('p_value')) < 0.05 else "are **not** significantly associated"
     p_chi_display = c.get('p_value_display', fmt_p(c.get('p_value_permutation', c.get('p_value'))))
 
-    report = f"""# Disaster Risk Prediction Dashboard — Final Project Report
+    report = f"""# Disaster Risk Prediction Analytics Framework — Final Project Report
 
 ## Metadata
 
 {get_metadata_table("Project Summary & Analytical Report")}
 
-> **Simulation-Based Analytics Prototype**
+> **Simulation-Based Analytics Framework Prototype**
 >
 > This project uses entirely synthetic data generated with a fixed random seed (42).
 > All numerical findings demonstrate an analytical and modelling workflow. They must
@@ -488,7 +488,7 @@ This report documents a complete disaster risk analytics pipeline covering synth
 data generation, data validation, spatial analysis, descriptive risk indexing,
 statistical hypothesis testing, predictive modelling (classification and regression),
 model explainability (SHAP), and district clustering. All analytical outputs are
-exported to a Power BI star-schema dashboard.
+exported for Power BI star-schema analysis.
 
 **Key findings** (all conditional on the synthetic data-generating process):
 
@@ -532,9 +532,10 @@ The dataset is a balanced district-month panel:
 | Districts | 100 |
 | Time span | January 2015 – December 2025 |
 | Rows | 13,200 |
-| Variables | ~36 |
-| Disaster Prevalence (contemporaneous) | ~12.0% of district-months |
-| Target Prevalence (Disaster_Next_Month) | ~20.8% of usable training months |
+| Raw Variables | {raw_cols_count} |
+| Cleaned Variables | {clean_cols_count} |
+| Disaster Prevalence (contemporaneous) | {s['disaster_occurred_prevalence']*100:.2f}% |
+| Target Prevalence (Disaster_Next_Month) | {s['train']['positive_rate']*100:.2f}% (Training) |
 
 ### 2.2 Variable Categories
 
@@ -550,8 +551,11 @@ The dataset is a balanced district-month panel:
 
 ### 2.3 Data Quality
 
-No missing values, no duplicate records, no impossible values detected. IQR-flagged
-outliers in Hazard_Severity and Wind_Speed represent genuine extreme events and are retained.
+We calculate data quality metrics dynamically from the dataset:
+- **Missing values**: {missing_count} null entries detected.
+- **Duplicate records**: {duplicate_count} duplicate rows found.
+
+IQR-flagged outliers in `Hazard_Severity` and `Wind_Speed_kmph` represent genuine extreme events and are retained.
 
 ---
 
@@ -688,9 +692,9 @@ K-Means clustering on standardised district profiles (Hazard, Exposure, Vulnerab
 
 ---
 
-## 7. Dashboard Design
+## 7. Power BI Integration Structure
 
-The Power BI dashboard uses a star schema with:
+The Power BI star schema includes:
 
 | Table | Type | Rows | Purpose |
 | --- | --- | --- | --- |
@@ -700,7 +704,7 @@ The Power BI dashboard uses a star schema with:
 | FactDistrictMonthRisk | Fact | 13,200 | Risk scores, predictions |
 | FactDisasterEvents | Fact | {reg['n_train_events'] + reg['n_val_events'] + reg['n_test_events']} | Post-event impacts (event-months only) |
 
-**Key dashboard pages**:
+**Recommended report views**:
 1. **Regional Risk Overview** — Choropleth map, risk distribution, regional comparisons
 2. **Temporal Trends** — Annual/seasonal disaster patterns, Mann–Kendall trend overlay
 3. **Prediction Performance** — Model metrics, confusion matrix, calibration plot
@@ -773,6 +777,15 @@ def main():
     cluster_data = load_json('outputs/cluster_summary.json')
     sensitivity = load_json('outputs/sensitivity_results.json')
 
+    # Load raw and clean data to compute counts dynamically
+    import pandas as pd
+    df_raw = pd.read_csv('data/disaster_risk_data.csv')
+    df_clean = pd.read_csv('data/cleaned_disaster_risk_data.csv')
+    raw_cols_count = len(df_raw.columns)
+    clean_cols_count = len(df_clean.columns)
+    missing_count = int(df_clean.isna().sum().sum())
+    duplicate_count = int(df_clean.duplicated().sum())
+
     # Generate each report
     stat_report = generate_statistical_report(stat, spatial)
     with open('reports/statistical_analysis_report.md', 'w', encoding='utf-8') as f:
@@ -784,13 +797,13 @@ def main():
         f.write(model_report)
     print("  Written: reports/model_evaluation_report.md")
 
-    final_report = generate_final_report(stat, spatial, clf, reg, cluster_data, sensitivity)
+    final_report = generate_final_report(stat, spatial, clf, reg, cluster_data, sensitivity, missing_count, duplicate_count, raw_cols_count, clean_cols_count)
     with open('reports/final_project_report.md', 'w', encoding='utf-8') as f:
         f.write(final_report)
     print("  Written: reports/final_project_report.md")
 
     print("\nAll reports generated successfully.")
-    print("Every number in every report was read from outputs/ JSON files.")
+    print("Every number in every report was read from outputs/ JSON files or data files.")
 
 
 if __name__ == "__main__":

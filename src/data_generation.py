@@ -120,6 +120,7 @@ class DisasterDataGenerator:
         """
         df_districts = self.generate_spatial_grid()
         records = []
+        previous_states = {} # d_id -> dict for autoregressive persistence
         
         for year in range(self.start_year, self.start_year + self.num_years):
             climate_trend_factor = (year - self.start_year) * 0.015  # Gradual heating/anomaly trend
@@ -145,39 +146,86 @@ class DisasterDataGenerator:
                 for idx, dist in df_districts.iterrows():
                     d_id = dist["District"]
                     
-                    # 1. Environmental Variables with Seasonality, Climate Trend, and Shocks
+                    # 1. Environmental Variables with Seasonality, Climate Trend, Shocks, and Autoregression
                     # Rainfall: higher near coast, mountains
                     coastal_boost = max(0, 300.0 - dist["Distance_From_Coast_km"] * 0.5)
                     elev_boost = dist["Elevation_Metres"] * 0.05
                     mean_rain = (base_seasonal_rain + coastal_boost + elev_boost) * (1.0 + climate_trend_factor * 0.2)
-                    rain = max(0, mean_rain + self.rng.normal(0, mean_rain * 0.3))
                     
-                    # Rainfall anomaly: relative to monthly baseline (simulated)
-                    rain_anomaly = (rain - mean_rain) / (mean_rain * 0.3 + 5.0)
+                    # Autoregressive persistence
+                    has_prev = d_id in previous_states
+                    
+                    if has_prev:
+                        prev = previous_states[d_id]
+                        # Persistence on anomaly:
+                        rain_anomaly = 0.55 * prev["rain_anomaly"] + self.rng.normal(0, 0.5)
+                        # Back-calculate rain based on rain_anomaly
+                        rain = max(0, mean_rain + rain_anomaly * (mean_rain * 0.3 + 5.0))
+                    else:
+                        rain = max(0, mean_rain + self.rng.normal(0, mean_rain * 0.3))
+                        rain_anomaly = (rain - mean_rain) / (mean_rain * 0.3 + 5.0)
                     
                     # Temperature
                     elev_cooling = dist["Elevation_Metres"] * 0.006  # Lapse rate
                     mean_temp = base_seasonal_temp - elev_cooling + climate_trend_factor
-                    temp = mean_temp + self.rng.normal(0, 1.5)
-                    temp_anomaly = temp - (base_seasonal_temp - elev_cooling)
+                    
+                    if has_prev:
+                        temp_anomaly = 0.55 * prev["temp_anomaly"] + self.rng.normal(0, 0.8)
+                        temp = mean_temp + temp_anomaly
+                    else:
+                        temp = mean_temp + self.rng.normal(0, 1.5)
+                        temp_anomaly = temp - (base_seasonal_temp - elev_cooling)
                     
                     # Wind speed: higher near coast and in storm seasons (May, Oct, Nov)
                     coastal_wind = max(0, 45.0 - dist["Distance_From_Coast_km"] * 0.1)
                     storm_factor = 1.8 if month in [5, 10, 11] else 1.0
-                    wind_speed = (12.0 + coastal_wind) * storm_factor + self.rng.uniform(0, 10)
+                    base_wind = (12.0 + coastal_wind) * storm_factor
+                    
+                    if has_prev:
+                        wind_speed = 0.35 * prev["wind_speed"] + 0.65 * (base_wind + self.rng.uniform(0, 10))
+                    else:
+                        wind_speed = base_wind + self.rng.uniform(0, 10)
                     
                     # River Level: rises with rainfall and rainfall anomalies
                     river_base = 2.0 + (1000 - dist["Elevation_Metres"]) * 0.001
-                    river_level = max(0.5, river_base + max(0, rain_anomaly) * 2.5 + (rain / 200.0) + self.rng.normal(0, 0.3))
+                    target_river = river_base + max(0, rain_anomaly) * 2.5 + (rain / 200.0)
+                    
+                    if has_prev:
+                        river_level = max(0.5, 0.55 * prev["river_level"] + 0.45 * target_river + self.rng.normal(0, 0.2))
+                    else:
+                        river_level = max(0.5, target_river + self.rng.normal(0, 0.3))
                     
                     # Soil moisture: low in summer, high in monsoon
-                    soil_moisture = np.clip(0.7 * (rain / 400.0) - 0.05 * temp_anomaly + 0.3 + self.rng.normal(0, 0.08), 0.05, 0.95)
+                    target_soil = 0.7 * (rain / 400.0) - 0.05 * temp_anomaly + 0.3
+                    if has_prev:
+                        soil_moisture = np.clip(0.55 * prev["soil_moisture"] + 0.45 * target_soil + self.rng.normal(0, 0.05), 0.05, 0.95)
+                    else:
+                        soil_moisture = np.clip(target_soil + self.rng.normal(0, 0.08), 0.05, 0.95)
                     
                     # Vegetation Index (NDVI): lags rain, lower where dry/urban
-                    veg_idx = np.clip(0.4 + 0.3 * soil_moisture - 0.1 * dist["Urbanisation_Rate"] + self.rng.normal(0, 0.05), 0.1, 0.9)
+                    target_veg = 0.4 + 0.3 * soil_moisture - 0.1 * dist["Urbanisation_Rate"]
+                    if has_prev:
+                        veg_idx = np.clip(0.60 * prev["veg_idx"] + 0.40 * target_veg + self.rng.normal(0, 0.03), 0.1, 0.9)
+                    else:
+                        veg_idx = np.clip(target_veg + self.rng.normal(0, 0.05), 0.1, 0.9)
                     
                     # Drought Index: high when soil moisture is very low
-                    drought_idx = np.clip((1.0 - soil_moisture) * 100.0 + max(0, temp_anomaly) * 5.0 + self.rng.normal(0, 3), 0, 100)
+                    target_drought = (1.0 - soil_moisture) * 100.0 + max(0, temp_anomaly) * 5.0
+                    if has_prev:
+                        drought_idx = np.clip(0.55 * prev["drought_idx"] + 0.45 * target_drought + self.rng.normal(0, 2), 0, 100)
+                    else:
+                        drought_idx = np.clip(target_drought + self.rng.normal(0, 3), 0, 100)
+                    
+                    # Save current state for next month's persistence
+                    previous_states[d_id] = {
+                        "rain_anomaly": rain_anomaly,
+                        "temp_anomaly": temp_anomaly,
+                        "wind_speed": wind_speed,
+                        "river_level": river_level,
+                        "soil_moisture": soil_moisture,
+                        "veg_idx": veg_idx,
+                        "drought_idx": drought_idx
+                    }
                     
                     # Seismic Activity: occasional random earthquake shock
                     seismic_base = dist["Seismic_Activity_Index"]
@@ -247,12 +295,12 @@ class DisasterDataGenerator:
                         disaster_duration = max(1, int(hazard_severity * 2.0 + self.rng.uniform(-2, 3)))
                         disaster_magnitude = hazard_severity * self.rng.uniform(0.8, 1.3)
                     else:
-                        disaster_type = "None"
+                        disaster_type = "No Disaster"
                         disaster_occurred = 0
                         hazard_severity = 0.0
                         disaster_duration = 0
                         disaster_magnitude = 0.0
-
+                    
                     # Compound event: two or more hazard types activated simultaneously
                     compound_event = 1 if len(active_hazards) >= 2 else 0
                     
@@ -393,7 +441,7 @@ def generate_data_dictionary(df):
         "Year": ("Temporal Coordinate", "Calendar year of the observation (2015 to 2025)"),
         "Month": ("Temporal Coordinate", "Calendar month of the observation (1 to 12)"),
         "Event_Date": ("Temporal Coordinate", "First date of the district-month (YYYY-MM-01)"),
-        "Disaster_Type": ("Disaster Characteristic", "The type of disaster that occurred (Flood, Cyclone, etc., or None)"),
+        "Disaster_Type": ("Disaster Characteristic", "The type of disaster that occurred (Flood, Cyclone, etc., or No Disaster)"),
         "Disaster_Occurred": ("Disaster Occurrence Flag", "Binary flag: 1 if a disaster occurred, 0 otherwise"),
         "Disaster_Duration_Days": ("Disaster Characteristic", "Duration of the disaster event in days"),
         "Disaster_Magnitude": ("Disaster Characteristic", "Physical magnitude of the hazard event"),
@@ -443,7 +491,22 @@ def generate_data_dictionary(df):
         "Houses_Damaged": ("Post-Event Impact Variable", "Total residential houses damaged or destroyed"),
         "Infrastructure_Damage_Score": ("Post-Event Impact Variable", "Score representing damage to roads/power (0-100)"),
         "Crop_Loss_Percentage": ("Post-Event Impact Variable", "Percentage of agricultural crop loss"),
-        "Economic_Loss_Million": ("Post-Event Impact Variable", "Estimated economic loss in USD Millions")
+        "Economic_Loss_Million": ("Post-Event Impact Variable", "Estimated economic loss in USD Millions"),
+        "Shelter_Rate_per_100k": ("Engineered Exposure/Prep", "Emergency shelters per 100,000 population"),
+        "Hospital_Rate_per_100k": ("Engineered Exposure/Prep", "Hospitals per 100,000 population"),
+        "Rescue_Team_Rate_per_100k": ("Engineered Exposure/Prep", "Rescue teams per 100,000 population"),
+        "Hazard_Score": ("Composite Index Component", "Descriptive score representing geographical hazard exposure (0-100)"),
+        "Exposure_Score": ("Composite Index Component", "Descriptive score representing human and infrastructure exposure (0-100)"),
+        "Vulnerability_Score": ("Composite Index Component", "Descriptive score representing socio-economic vulnerability (0-100)"),
+        "Preparedness_Score": ("Composite Index Component", "Descriptive score representing emergency preparedness capacity (0-100)"),
+        "Preparedness_Deficit_Score": ("Composite Index Component", "Descriptive score representing preparedness gap (100 - Preparedness_Score)"),
+        "Disaster_Risk_Score": ("Composite Index Component", "Composite descriptive disaster risk index (Weighted combination of H, E, V, P_Deficit)"),
+        "Equal_Weighted_Risk": ("Composite Index Component", "Descriptive risk score calculated with uniform component weights"),
+        "Risk_Category": ("Composite Index Category", "Quantile-based categorical classification of Disaster_Risk_Score (Low, Moderate, High, Critical)"),
+        "Previous_Month_Disaster_Occurred": ("Lag Feature", "Disaster occurrence flag from the previous month (t-1)"),
+        "Previous_Month_Hazard_Severity": ("Lag Feature", "Hazard severity score from the previous month (t-1)"),
+        "Rolling_12_Month_Disaster_Count": ("Rolling Feature", "Cumulative count of disasters in the district over the last 12 months"),
+        "Disaster_Next_Month": ("Lead Variable (Target)", "Binary flag: 1 if a disaster occurs in the following month (t+1), 0 otherwise")
     }
     
     for col in df.columns:

@@ -8,7 +8,7 @@ Longitude,float64,Spatial Coordinate,Longitude coordinate of the district centro
 Year,int64,Temporal Coordinate,Calendar year of the observation (2015 to 2025)
 Month,int64,Temporal Coordinate,Calendar month of the observation (1 to 12)
 Event_Date,str,Temporal Coordinate,First date of the district-month (YYYY-MM-01)
-Disaster_Type,str,Disaster Characteristic,"The type of disaster that occurred (Flood, Cyclone, etc., or None)"
+Disaster_Type,str,Disaster Characteristic,"The type of disaster that occurred (Flood, Cyclone, etc., or No Disaster)"
 Disaster_Occurred,int64,Disaster Occurrence Flag,"Binary flag: 1 if a disaster occurred, 0 otherwise"
 Disaster_Duration_Days,int64,Disaster Characteristic,Duration of the disaster event in days
 Disaster_Magnitude,float64,Disaster Characteristic,Physical magnitude of the hazard event

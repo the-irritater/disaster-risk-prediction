@@ -49,6 +49,7 @@ if __name__ == "__main__":
     for nb in notebooks:
         try:
             run_notebook(nb)
-        except Exception as e:
-            print(f"Error executing {nb}: {e}")
-            break
+        except Exception as exc:
+            print(f"Error executing {nb}: {exc}")
+            import sys
+            sys.exit(1)
