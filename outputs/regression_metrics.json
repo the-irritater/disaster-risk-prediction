@@ -1,0 +1,64 @@
+{
+  "selected_model": "Tweedie GLM",
+  "n_train_events": 1494,
+  "n_val_events": 362,
+  "n_test_events": 180,
+  "validation_results": {
+    "Ridge": {
+      "mae": 316.5457,
+      "rmse": 549.7703,
+      "r_squared": 0.0747,
+      "mdape": 50.29,
+      "mean_y": 560.9792,
+      "std_y": 571.5381
+    },
+    "Random Forest": {
+      "mae": 313.3027,
+      "rmse": 515.1907,
+      "r_squared": 0.1875,
+      "mdape": 50.5841,
+      "mean_y": 560.9792,
+      "std_y": 571.5381
+    },
+    "XGBoost": {
+      "mae": 335.4331,
+      "rmse": 518.6119,
+      "r_squared": 0.1766,
+      "mdape": 55.8743,
+      "mean_y": 560.9792,
+      "std_y": 571.5381
+    },
+    "Gamma GLM": {
+      "mae": 328.8916,
+      "rmse": 527.0952,
+      "r_squared": 0.1495,
+      "mdape": 53.8109,
+      "mean_y": 560.9792,
+      "std_y": 571.5381
+    },
+    "Tweedie GLM": {
+      "mae": 321.7107,
+      "rmse": 513.1162,
+      "r_squared": 0.194,
+      "mdape": 50.0583,
+      "mean_y": 560.9792,
+      "std_y": 571.5381
+    }
+  },
+  "test_results": {
+    "mae": 357.3308,
+    "rmse": 522.5115,
+    "r_squared": 0.1693,
+    "mdape": 58.4815,
+    "mean_y": 578.6341,
+    "std_y": 573.2765
+  },
+  "bootstrap_r2_95_ci": {
+    "lower": 0.0821,
+    "upper": 0.2447
+  },
+  "residual_normality": {
+    "shapiro_w": 0.8571,
+    "shapiro_p": 0.0
+  }
+}

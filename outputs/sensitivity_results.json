@@ -1,0 +1,709 @@
+{
+  "spearman_rho": 0.9892,
+  "spearman_p": 1.3736272105221043e-83,
+  "mean_simulated_spearman": 0.9128,
+  "std_simulated_spearman": 0.0661,
+  "top_10_stability_index": 0.687,
+  "district_summaries": [
+    {
+      "District": "D_001",
+      "Expert_Rank": 20,
+      "Median_Simulated_Rank": 31.0,
+      "Rank_CI_Lower": 8.0,
+      "Rank_CI_Upper": 62.0
+    },
+    {
+      "District": "D_002",
+      "Expert_Rank": 45,
+      "Median_Simulated_Rank": 48.0,
+      "Rank_CI_Lower": 18.0,
+      "Rank_CI_Upper": 81.0
+    },
+    {
+      "District": "D_003",
+      "Expert_Rank": 39,
+      "Median_Simulated_Rank": 39.0,
+      "Rank_CI_Lower": 23.0,
+      "Rank_CI_Upper": 48.0
+    },
+    {
+      "District": "D_004",
+      "Expert_Rank": 13,
+      "Median_Simulated_Rank": 11.0,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 44.0
+    },
+    {
+      "District": "D_005",
+      "Expert_Rank": 80,
+      "Median_Simulated_Rank": 78.0,
+      "Rank_CI_Lower": 69.0,
+      "Rank_CI_Upper": 84.0
+    },
+    {
+      "District": "D_006",
+      "Expert_Rank": 2,
+      "Median_Simulated_Rank": 3.0,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 15.0
+    },
+    {
+      "District": "D_007",
+      "Expert_Rank": 76,
+      "Median_Simulated_Rank": 73.5,
+      "Rank_CI_Lower": 58.0,
+      "Rank_CI_Upper": 83.0
+    },
+    {
+      "District": "D_008",
+      "Expert_Rank": 69,
+      "Median_Simulated_Rank": 65.0,
+      "Rank_CI_Lower": 56.0,
+      "Rank_CI_Upper": 74.0
+    },
+    {
+      "District": "D_009",
+      "Expert_Rank": 41,
+      "Median_Simulated_Rank": 37.0,
+      "Rank_CI_Lower": 30.0,
+      "Rank_CI_Upper": 45.0
+    },
+    {
+      "District": "D_010",
+      "Expert_Rank": 37,
+      "Median_Simulated_Rank": 39.0,
+      "Rank_CI_Lower": 19.0,
+      "Rank_CI_Upper": 59.1
+    },
+    {
+      "District": "D_011",
+      "Expert_Rank": 66,
+      "Median_Simulated_Rank": 65.0,
+      "Rank_CI_Lower": 37.0,
+      "Rank_CI_Upper": 84.0
+    },
+    {
+      "District": "D_012",
+      "Expert_Rank": 59,
+      "Median_Simulated_Rank": 63.0,
+      "Rank_CI_Lower": 38.0,
+      "Rank_CI_Upper": 83.0
+    },
+    {
+      "District": "D_013",
+      "Expert_Rank": 97,
+      "Median_Simulated_Rank": 97.0,
+      "Rank_CI_Lower": 90.0,
+      "Rank_CI_Upper": 99.0
+    },
+    {
+      "District": "D_014",
+      "Expert_Rank": 28,
+      "Median_Simulated_Rank": 30.0,
+      "Rank_CI_Lower": 19.0,
+      "Rank_CI_Upper": 47.0
+    },
+    {
+      "District": "D_015",
+      "Expert_Rank": 14,
+      "Median_Simulated_Rank": 20.0,
+      "Rank_CI_Lower": 12.0,
+      "Rank_CI_Upper": 40.0
+    },
+    {
+      "District": "D_016",
+      "Expert_Rank": 22,
+      "Median_Simulated_Rank": 26.5,
+      "Rank_CI_Lower": 9.0,
+      "Rank_CI_Upper": 54.1
+    },
+    {
+      "District": "D_017",
+      "Expert_Rank": 65,
+      "Median_Simulated_Rank": 62.0,
+      "Rank_CI_Lower": 52.0,
+      "Rank_CI_Upper": 71.0
+    },
+    {
+      "District": "D_018",
+      "Expert_Rank": 27,
+      "Median_Simulated_Rank": 20.0,
+      "Rank_CI_Lower": 11.0,
+      "Rank_CI_Upper": 38.0
+    },
+    {
+      "District": "D_019",
+      "Expert_Rank": 83,
+      "Median_Simulated_Rank": 80.0,
+      "Rank_CI_Lower": 59.0,
+      "Rank_CI_Upper": 93.0
+    },
+    {
+      "District": "D_020",
+      "Expert_Rank": 93,
+      "Median_Simulated_Rank": 93.0,
+      "Rank_CI_Lower": 80.0,
+      "Rank_CI_Upper": 98.0
+    },
+    {
+      "District": "D_021",
+      "Expert_Rank": 68,
+      "Median_Simulated_Rank": 72.0,
+      "Rank_CI_Lower": 49.9,
+      "Rank_CI_Upper": 84.0
+    },
+    {
+      "District": "D_022",
+      "Expert_Rank": 7,
+      "Median_Simulated_Rank": 7.5,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 24.0
+    },
+    {
+      "District": "D_023",
+      "Expert_Rank": 40,
+      "Median_Simulated_Rank": 42.0,
+      "Rank_CI_Lower": 28.0,
+      "Rank_CI_Upper": 51.0
+    },
+    {
+      "District": "D_024",
+      "Expert_Rank": 100,
+      "Median_Simulated_Rank": 99.0,
+      "Rank_CI_Lower": 92.0,
+      "Rank_CI_Upper": 100.0
+    },
+    {
+      "District": "D_025",
+      "Expert_Rank": 3,
+      "Median_Simulated_Rank": 6.0,
+      "Rank_CI_Lower": 3.0,
+      "Rank_CI_Upper": 20.0
+    },
+    {
+      "District": "D_026",
+      "Expert_Rank": 16,
+      "Median_Simulated_Rank": 18.0,
+      "Rank_CI_Lower": 11.0,
+      "Rank_CI_Upper": 25.0
+    },
+    {
+      "District": "D_027",
+      "Expert_Rank": 9,
+      "Median_Simulated_Rank": 7.0,
+      "Rank_CI_Lower": 4.0,
+      "Rank_CI_Upper": 22.0
+    },
+    {
+      "District": "D_028",
+      "Expert_Rank": 81,
+      "Median_Simulated_Rank": 82.0,
+      "Rank_CI_Lower": 61.0,
+      "Rank_CI_Upper": 94.0
+    },
+    {
+      "District": "D_029",
+      "Expert_Rank": 34,
+      "Median_Simulated_Rank": 31.0,
+      "Rank_CI_Lower": 23.0,
+      "Rank_CI_Upper": 47.0
+    },
+    {
+      "District": "D_030",
+      "Expert_Rank": 57,
+      "Median_Simulated_Rank": 52.0,
+      "Rank_CI_Lower": 26.9,
+      "Rank_CI_Upper": 74.0
+    },
+    {
+      "District": "D_031",
+      "Expert_Rank": 42,
+      "Median_Simulated_Rank": 46.5,
+      "Rank_CI_Lower": 17.0,
+      "Rank_CI_Upper": 73.0
+    },
+    {
+      "District": "D_032",
+      "Expert_Rank": 51,
+      "Median_Simulated_Rank": 51.0,
+      "Rank_CI_Lower": 20.0,
+      "Rank_CI_Upper": 72.0
+    },
+    {
+      "District": "D_033",
+      "Expert_Rank": 58,
+      "Median_Simulated_Rank": 62.0,
+      "Rank_CI_Lower": 44.0,
+      "Rank_CI_Upper": 77.0
+    },
+    {
+      "District": "D_034",
+      "Expert_Rank": 79,
+      "Median_Simulated_Rank": 79.0,
+      "Rank_CI_Lower": 65.0,
+      "Rank_CI_Upper": 87.0
+    },
+    {
+      "District": "D_035",
+      "Expert_Rank": 43,
+      "Median_Simulated_Rank": 33.5,
+      "Rank_CI_Lower": 8.0,
+      "Rank_CI_Upper": 66.1
+    },
+    {
+      "District": "D_036",
+      "Expert_Rank": 85,
+      "Median_Simulated_Rank": 83.0,
+      "Rank_CI_Lower": 71.0,
+      "Rank_CI_Upper": 89.0
+    },
+    {
+      "District": "D_037",
+      "Expert_Rank": 92,
+      "Median_Simulated_Rank": 90.0,
+      "Rank_CI_Lower": 69.0,
+      "Rank_CI_Upper": 97.0
+    },
+    {
+      "District": "D_038",
+      "Expert_Rank": 95,
+      "Median_Simulated_Rank": 93.0,
+      "Rank_CI_Lower": 83.0,
+      "Rank_CI_Upper": 97.0
+    },
+    {
+      "District": "D_039",
+      "Expert_Rank": 70,
+      "Median_Simulated_Rank": 60.0,
+      "Rank_CI_Lower": 32.9,
+      "Rank_CI_Upper": 87.0
+    },
+    {
+      "District": "D_040",
+      "Expert_Rank": 50,
+      "Median_Simulated_Rank": 49.5,
+      "Rank_CI_Lower": 14.9,
+      "Rank_CI_Upper": 87.0
+    },
+    {
+      "District": "D_041",
+      "Expert_Rank": 10,
+      "Median_Simulated_Rank": 16.0,
+      "Rank_CI_Lower": 7.0,
+      "Rank_CI_Upper": 38.0
+    },
+    {
+      "District": "D_042",
+      "Expert_Rank": 90,
+      "Median_Simulated_Rank": 89.0,
+      "Rank_CI_Lower": 62.0,
+      "Rank_CI_Upper": 98.0
+    },
+    {
+      "District": "D_043",
+      "Expert_Rank": 53,
+      "Median_Simulated_Rank": 65.0,
+      "Rank_CI_Lower": 33.0,
+      "Rank_CI_Upper": 90.0
+    },
+    {
+      "District": "D_044",
+      "Expert_Rank": 94,
+      "Median_Simulated_Rank": 91.0,
+      "Rank_CI_Lower": 81.0,
+      "Rank_CI_Upper": 94.0
+    },
+    {
+      "District": "D_045",
+      "Expert_Rank": 46,
+      "Median_Simulated_Rank": 50.0,
+      "Rank_CI_Lower": 39.0,
+      "Rank_CI_Upper": 58.0
+    },
+    {
+      "District": "D_046",
+      "Expert_Rank": 71,
+      "Median_Simulated_Rank": 67.0,
+      "Rank_CI_Lower": 62.0,
+      "Rank_CI_Upper": 71.0
+    },
+    {
+      "District": "D_047",
+      "Expert_Rank": 32,
+      "Median_Simulated_Rank": 31.0,
+      "Rank_CI_Lower": 20.0,
+      "Rank_CI_Upper": 41.0
+    },
+    {
+      "District": "D_048",
+      "Expert_Rank": 33,
+      "Median_Simulated_Rank": 27.5,
+      "Rank_CI_Lower": 11.0,
+      "Rank_CI_Upper": 49.0
+    },
+    {
+      "District": "D_049",
+      "Expert_Rank": 36,
+      "Median_Simulated_Rank": 26.0,
+      "Rank_CI_Lower": 5.0,
+      "Rank_CI_Upper": 61.0
+    },
+    {
+      "District": "D_050",
+      "Expert_Rank": 86,
+      "Median_Simulated_Rank": 86.0,
+      "Rank_CI_Lower": 63.0,
+      "Rank_CI_Upper": 96.0
+    },
+    {
+      "District": "D_051",
+      "Expert_Rank": 82,
+      "Median_Simulated_Rank": 82.0,
+      "Rank_CI_Lower": 70.0,
+      "Rank_CI_Upper": 87.0
+    },
+    {
+      "District": "D_052",
+      "Expert_Rank": 55,
+      "Median_Simulated_Rank": 57.0,
+      "Rank_CI_Lower": 30.0,
+      "Rank_CI_Upper": 80.0
+    },
+    {
+      "District": "D_053",
+      "Expert_Rank": 64,
+      "Median_Simulated_Rank": 65.5,
+      "Rank_CI_Lower": 53.0,
+      "Rank_CI_Upper": 74.0
+    },
+    {
+      "District": "D_054",
+      "Expert_Rank": 31,
+      "Median_Simulated_Rank": 30.0,
+      "Rank_CI_Lower": 15.0,
+      "Rank_CI_Upper": 43.0
+    },
+    {
+      "District": "D_055",
+      "Expert_Rank": 5,
+      "Median_Simulated_Rank": 9.0,
+      "Rank_CI_Lower": 3.0,
+      "Rank_CI_Upper": 36.1
+    },
+    {
+      "District": "D_056",
+      "Expert_Rank": 87,
+      "Median_Simulated_Rank": 90.0,
+      "Rank_CI_Lower": 58.0,
+      "Rank_CI_Upper": 99.0
+    },
+    {
+      "District": "D_057",
+      "Expert_Rank": 73,
+      "Median_Simulated_Rank": 69.5,
+      "Rank_CI_Lower": 55.0,
+      "Rank_CI_Upper": 83.0
+    },
+    {
+      "District": "D_058",
+      "Expert_Rank": 8,
+      "Median_Simulated_Rank": 10.0,
+      "Rank_CI_Lower": 6.0,
+      "Rank_CI_Upper": 25.0
+    },
+    {
+      "District": "D_059",
+      "Expert_Rank": 91,
+      "Median_Simulated_Rank": 91.0,
+      "Rank_CI_Lower": 68.0,
+      "Rank_CI_Upper": 99.0
+    },
+    {
+      "District": "D_060",
+      "Expert_Rank": 56,
+      "Median_Simulated_Rank": 57.0,
+      "Rank_CI_Lower": 47.9,
+      "Rank_CI_Upper": 73.0
+    },
+    {
+      "District": "D_061",
+      "Expert_Rank": 75,
+      "Median_Simulated_Rank": 78.0,
+      "Rank_CI_Lower": 46.0,
+      "Rank_CI_Upper": 93.0
+    },
+    {
+      "District": "D_062",
+      "Expert_Rank": 44,
+      "Median_Simulated_Rank": 41.0,
+      "Rank_CI_Lower": 18.0,
+      "Rank_CI_Upper": 55.0
+    },
+    {
+      "District": "D_063",
+      "Expert_Rank": 38,
+      "Median_Simulated_Rank": 34.0,
+      "Rank_CI_Lower": 23.0,
+      "Rank_CI_Upper": 43.0
+    },
+    {
+      "District": "D_064",
+      "Expert_Rank": 30,
+      "Median_Simulated_Rank": 28.0,
+      "Rank_CI_Lower": 12.0,
+      "Rank_CI_Upper": 54.0
+    },
+    {
+      "District": "D_065",
+      "Expert_Rank": 12,
+      "Median_Simulated_Rank": 11.5,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 47.2
+    },
+    {
+      "District": "D_066",
+      "Expert_Rank": 77,
+      "Median_Simulated_Rank": 74.0,
+      "Rank_CI_Lower": 67.0,
+      "Rank_CI_Upper": 79.0
+    },
+    {
+      "District": "D_067",
+      "Expert_Rank": 49,
+      "Median_Simulated_Rank": 52.0,
+      "Rank_CI_Lower": 33.0,
+      "Rank_CI_Upper": 68.0
+    },
+    {
+      "District": "D_068",
+      "Expert_Rank": 24,
+      "Median_Simulated_Rank": 26.0,
+      "Rank_CI_Lower": 15.0,
+      "Rank_CI_Upper": 44.1
+    },
+    {
+      "District": "D_069",
+      "Expert_Rank": 89,
+      "Median_Simulated_Rank": 87.0,
+      "Rank_CI_Lower": 73.0,
+      "Rank_CI_Upper": 94.0
+    },
+    {
+      "District": "D_070",
+      "Expert_Rank": 99,
+      "Median_Simulated_Rank": 98.0,
+      "Rank_CI_Lower": 94.0,
+      "Rank_CI_Upper": 100.0
+    },
+    {
+      "District": "D_071",
+      "Expert_Rank": 19,
+      "Median_Simulated_Rank": 25.0,
+      "Rank_CI_Lower": 11.0,
+      "Rank_CI_Upper": 41.0
+    },
+    {
+      "District": "D_072",
+      "Expert_Rank": 74,
+      "Median_Simulated_Rank": 77.0,
+      "Rank_CI_Lower": 53.0,
+      "Rank_CI_Upper": 92.0
+    },
+    {
+      "District": "D_073",
+      "Expert_Rank": 48,
+      "Median_Simulated_Rank": 47.0,
+      "Rank_CI_Lower": 15.0,
+      "Rank_CI_Upper": 83.0
+    },
+    {
+      "District": "D_074",
+      "Expert_Rank": 6,
+      "Median_Simulated_Rank": 9.0,
+      "Rank_CI_Lower": 5.0,
+      "Rank_CI_Upper": 29.0
+    },
+    {
+      "District": "D_075",
+      "Expert_Rank": 96,
+      "Median_Simulated_Rank": 95.0,
+      "Rank_CI_Lower": 73.0,
+      "Rank_CI_Upper": 100.0
+    },
+    {
+      "District": "D_076",
+      "Expert_Rank": 54,
+      "Median_Simulated_Rank": 56.0,
+      "Rank_CI_Lower": 46.0,
+      "Rank_CI_Upper": 65.0
+    },
+    {
+      "District": "D_077",
+      "Expert_Rank": 15,
+      "Median_Simulated_Rank": 21.0,
+      "Rank_CI_Lower": 11.0,
+      "Rank_CI_Upper": 39.0
+    },
+    {
+      "District": "D_078",
+      "Expert_Rank": 88,
+      "Median_Simulated_Rank": 88.0,
+      "Rank_CI_Lower": 83.0,
+      "Rank_CI_Upper": 91.0
+    },
+    {
+      "District": "D_079",
+      "Expert_Rank": 35,
+      "Median_Simulated_Rank": 33.0,
+      "Rank_CI_Lower": 16.0,
+      "Rank_CI_Upper": 54.0
+    },
+    {
+      "District": "D_080",
+      "Expert_Rank": 72,
+      "Median_Simulated_Rank": 67.0,
+      "Rank_CI_Lower": 60.0,
+      "Rank_CI_Upper": 79.0
+    },
+    {
+      "District": "D_081",
+      "Expert_Rank": 23,
+      "Median_Simulated_Rank": 30.0,
+      "Rank_CI_Lower": 12.0,
+      "Rank_CI_Upper": 53.0
+    },
+    {
+      "District": "D_082",
+      "Expert_Rank": 25,
+      "Median_Simulated_Rank": 24.5,
+      "Rank_CI_Lower": 8.0,
+      "Rank_CI_Upper": 52.0
+    },
+    {
+      "District": "D_083",
+      "Expert_Rank": 1,
+      "Median_Simulated_Rank": 1.0,
+      "Rank_CI_Lower": 1.0,
+      "Rank_CI_Upper": 3.0
+    },
+    {
+      "District": "D_084",
+      "Expert_Rank": 60,
+      "Median_Simulated_Rank": 58.5,
+      "Rank_CI_Lower": 28.0,
+      "Rank_CI_Upper": 87.0
+    },
+    {
+      "District": "D_085",
+      "Expert_Rank": 26,
+      "Median_Simulated_Rank": 25.0,
+      "Rank_CI_Lower": 17.0,
+      "Rank_CI_Upper": 43.0
+    },
+    {
+      "District": "D_086",
+      "Expert_Rank": 4,
+      "Median_Simulated_Rank": 5.5,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 13.0
+    },
+    {
+      "District": "D_087",
+      "Expert_Rank": 47,
+      "Median_Simulated_Rank": 49.0,
+      "Rank_CI_Lower": 37.0,
+      "Rank_CI_Upper": 63.0
+    },
+    {
+      "District": "D_088",
+      "Expert_Rank": 11,
+      "Median_Simulated_Rank": 11.5,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 45.0
+    },
+    {
+      "District": "D_089",
+      "Expert_Rank": 62,
+      "Median_Simulated_Rank": 60.0,
+      "Rank_CI_Lower": 40.0,
+      "Rank_CI_Upper": 78.0
+    },
+    {
+      "District": "D_090",
+      "Expert_Rank": 63,
+      "Median_Simulated_Rank": 61.5,
+      "Rank_CI_Lower": 29.0,
+      "Rank_CI_Upper": 91.0
+    },
+    {
+      "District": "D_091",
+      "Expert_Rank": 17,
+      "Median_Simulated_Rank": 26.0,
+      "Rank_CI_Lower": 10.0,
+      "Rank_CI_Upper": 49.0
+    },
+    {
+      "District": "D_092",
+      "Expert_Rank": 78,
+      "Median_Simulated_Rank": 79.0,
+      "Rank_CI_Lower": 49.0,
+      "Rank_CI_Upper": 97.0
+    },
+    {
+      "District": "D_093",
+      "Expert_Rank": 61,
+      "Median_Simulated_Rank": 51.0,
+      "Rank_CI_Lower": 10.0,
+      "Rank_CI_Upper": 86.0
+    },
+    {
+      "District": "D_094",
+      "Expert_Rank": 84,
+      "Median_Simulated_Rank": 79.0,
+      "Rank_CI_Lower": 64.0,
+      "Rank_CI_Upper": 89.0
+    },
+    {
+      "District": "D_095",
+      "Expert_Rank": 98,
+      "Median_Simulated_Rank": 98.0,
+      "Rank_CI_Lower": 88.0,
+      "Rank_CI_Upper": 100.0
+    },
+    {
+      "District": "D_096",
+      "Expert_Rank": 29,
+      "Median_Simulated_Rank": 29.0,
+      "Rank_CI_Lower": 20.0,
+      "Rank_CI_Upper": 41.0
+    },
+    {
+      "District": "D_097",
+      "Expert_Rank": 52,
+      "Median_Simulated_Rank": 55.5,
+      "Rank_CI_Lower": 29.0,
+      "Rank_CI_Upper": 79.0
+    },
+    {
+      "District": "D_098",
+      "Expert_Rank": 18,
+      "Median_Simulated_Rank": 11.0,
+      "Rank_CI_Lower": 2.0,
+      "Rank_CI_Upper": 56.0
+    },
+    {
+      "District": "D_099",
+      "Expert_Rank": 21,
+      "Median_Simulated_Rank": 25.0,
+      "Rank_CI_Lower": 10.0,
+      "Rank_CI_Upper": 50.0
+    },
+    {
+      "District": "D_100",
+      "Expert_Rank": 67,
+      "Median_Simulated_Rank": 57.0,
+      "Rank_CI_Lower": 29.0,
+      "Rank_CI_Upper": 83.0
+    }
+  ]
+}

@@ -18,6 +18,4 @@ __pycache__/
 .vscode/
 .idea/
 
-# Exclude as requested by user
-outputs/
-power_bi/
+# Include outputs and power_bi as requested for GitHub upload

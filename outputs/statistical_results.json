@@ -1,0 +1,201 @@
+{
+  "anova": {
+    "unit_of_analysis": "District means",
+    "n_observations": 100,
+    "n_groups": 5,
+    "anova_type": "Standard",
+    "levene_statistic": 0.0414,
+    "levene_p_value": 0.996696,
+    "f_statistic": 0.6452,
+    "p_value": 0.6316436936051766,
+    "df_between": 4,
+    "df_residual": 95,
+    "eta_squared": 0.0264,
+    "significant_at_0_05": false,
+    "group_means": {
+      "Central": 35.2962,
+      "East": 34.9926,
+      "North": 36.4767,
+      "South": 35.3884,
+      "West": 37.8921
+    },
+    "group_sds": {
+      "Central": 6.9471,
+      "East": 6.4074,
+      "North": 6.3926,
+      "South": 6.7007,
+      "West": 6.7413
+    },
+    "group_counts": {
+      "Central": 20,
+      "East": 20,
+      "North": 20,
+      "South": 20,
+      "West": 20
+    }
+  },
+  "permutation_chi_square": {
+    "unit_of_analysis": "District-level modal category",
+    "n_observations": 100,
+    "chi2_observed": 7.2341,
+    "degrees_of_freedom": 12,
+    "n_permutations": 9999,
+    "p_value_permutation": 0.853185,
+    "p_value_display": "0.8532",
+    "cramers_v": 0.1553,
+    "v_interpretation": "small to moderate",
+    "min_expected_frequency": 4.6,
+    "pct_cells_below_5": 25.0,
+    "chi_square_approximation_valid": false,
+    "reason_invalid": "Min expected cell frequency = 0.20 (requirement: >= 5)",
+    "contingency_table": {
+      "Critical": {
+        "Central": 4,
+        "East": 3,
+        "North": 5,
+        "South": 5,
+        "West": 8
+      },
+      "High": {
+        "Central": 4,
+        "East": 5,
+        "North": 6,
+        "South": 5,
+        "West": 3
+      },
+      "Low": {
+        "Central": 6,
+        "East": 6,
+        "North": 5,
+        "South": 7,
+        "West": 3
+      },
+      "Moderate": {
+        "Central": 6,
+        "East": 6,
+        "North": 4,
+        "South": 3,
+        "West": 6
+      }
+    }
+  },
+  "trend": {
+    "n_years": 11,
+    "annual_counts": {
+      "2015": 189,
+      "2016": 205,
+      "2017": 171,
+      "2018": 188,
+      "2019": 182,
+      "2020": 193,
+      "2021": 179,
+      "2022": 187,
+      "2023": 187,
+      "2024": 175,
+      "2025": 180
+    },
+    "mann_kendall_S": -18,
+    "kendall_tau": -0.3273,
+    "variance_S": 164.0,
+    "z_statistic": -1.3275,
+    "p_value_two_sided": 0.184351,
+    "sens_slope": -1.3333,
+    "trend_direction": "decreasing",
+    "power_warning": "N=11: low power due to small sample size"
+  },
+  "regression": {
+    "n_events": 2036,
+    "r_squared": 0.3015,
+    "adj_r_squared": 0.2998,
+    "f_statistic": 53.585,
+    "f_pvalue": 1.1797084217807217e-26,
+    "cov_type": "cluster-robust (by district)",
+    "coefficients": {
+      "Coefficient": {
+        "Intercept": -340.0198,
+        "Hazard_Severity": 72.0135,
+        "Population_Density": -0.0117,
+        "Infrastructure_Density": 12.1214,
+        "Poverty_Rate": -9.7827,
+        "Preparedness_Score": -3.3509
+      },
+      "Std_Error": {
+        "Intercept": 78.3667,
+        "Hazard_Severity": 5.1608,
+        "Population_Density": 0.0094,
+        "Infrastructure_Density": 1.0658,
+        "Poverty_Rate": 128.7602,
+        "Preparedness_Score": 1.0149
+      },
+      "CI_Lower": {
+        "Intercept": -493.6158,
+        "Hazard_Severity": 61.8985,
+        "Population_Density": -0.0301,
+        "Infrastructure_Density": 10.0325,
+        "Poverty_Rate": -262.1481,
+        "Preparedness_Score": -5.3401
+      },
+      "CI_Upper": {
+        "Intercept": -186.4239,
+        "Hazard_Severity": 82.1285,
+        "Population_Density": 0.0068,
+        "Infrastructure_Density": 14.2103,
+        "Poverty_Rate": 242.5827,
+        "Preparedness_Score": -1.3617
+      },
+      "p_value": {
+        "Intercept": 1.4e-05,
+        "Hazard_Severity": 0.0,
+        "Population_Density": 0.214049,
+        "Infrastructure_Density": 0.0,
+        "Poverty_Rate": 0.939438,
+        "Preparedness_Score": 0.000961
+      }
+    },
+    "vif": {
+      "Hazard_Severity": 1.06,
+      "Population_Density": 1.2,
+      "Infrastructure_Density": 1.08,
+      "Poverty_Rate": 1.08,
+      "Preparedness_Score": 1.08
+    },
+    "formula": "Economic_Loss_Million ~ Hazard_Severity + Population_Density + Infrastructure_Density + Poverty_Rate + Preparedness_Score"
+  },
+  "component_correlation": {
+    "Hazard_Score": {
+      "Hazard_Score": 1.0,
+      "Exposure_Score": 0.0173,
+      "Vulnerability_Score": -0.0643,
+      "Preparedness_Score": 0.0538,
+      "Disaster_Risk_Score": 0.2683
+    },
+    "Exposure_Score": {
+      "Hazard_Score": 0.0173,
+      "Exposure_Score": 1.0,
+      "Vulnerability_Score": 0.0371,
+      "Preparedness_Score": 0.2421,
+      "Disaster_Risk_Score": 0.6143
+    },
+    "Vulnerability_Score": {
+      "Hazard_Score": -0.0643,
+      "Exposure_Score": 0.0371,
+      "Vulnerability_Score": 1.0,
+      "Preparedness_Score": -0.0694,
+      "Disaster_Risk_Score": 0.5726
+    },
+    "Preparedness_Score": {
+      "Hazard_Score": 0.0538,
+      "Exposure_Score": 0.2421,
+      "Vulnerability_Score": -0.0694,
+      "Preparedness_Score": 1.0,
+      "Disaster_Risk_Score": -0.348
+    },
+    "Disaster_Risk_Score": {
+      "Hazard_Score": 0.2683,
+      "Exposure_Score": 0.6143,
+      "Vulnerability_Score": 0.5726,
+      "Preparedness_Score": -0.348,
+      "Disaster_Risk_Score": 1.0
+    }
+  }
+}

@@ -1,0 +1,101 @@
+// ============================================================================
+// POWER BI DAX MEASURES — DISASTER RISK PREDICTION ANALYTICS FRAMEWORK
+// Single source of truth for all framework KPIs, prediction logic, and aggregates.
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// 1. CORE KEY PERFORMANCE INDICATORS (KPIs)
+// ----------------------------------------------------------------------------
+
+Total_Events = 
+CALCULATE(
+    SUM(FactDistrictMonthRisk[Disaster_Occurred]),
+    FactDistrictMonthRisk[Disaster_Occurred] = 1
+)
+
+Total_Deaths = SUM(FactDisasterEvents[Number_of_Deaths])
+
+Total_Injuries = SUM(FactDisasterEvents[Number_of_Injuries])
+
+Total_People_Affected = SUM(FactDisasterEvents[Number_of_People_Affected])
+
+Total_Displaced = SUM(FactDisasterEvents[Displacement_Count])
+
+Total_Economic_Loss_M_USD = SUM(FactDisasterEvents[Economic_Loss_Million])
+
+Average_Disaster_Risk_Score = AVERAGE(FactDistrictMonthRisk[Disaster_Risk_Score])
+
+// ----------------------------------------------------------------------------
+// 2. PREDICTIVE MODEL & EXPECTED RISK MEASURES
+// ----------------------------------------------------------------------------
+
+Average_Forecast_Probability = AVERAGE(FactRiskPredictions[Predicted_Disaster_Probability])
+
+Active_Alerts = 
+CALCULATE(
+    COUNT(FactRiskPredictions[Prediction_ID]),
+    FactRiskPredictions[Predicted_Disaster_Class] = 1
+)
+
+Alert_Precision = 
+VAR TruePositives = 
+    CALCULATE(
+        COUNT(FactRiskPredictions[Prediction_ID]),
+        FactRiskPredictions[Predicted_Disaster_Class] = 1 && FactRiskPredictions[Actual_Disaster_Occurred] = 1
+    )
+VAR TotalAlerts = 
+    CALCULATE(
+        COUNT(FactRiskPredictions[Prediction_ID]),
+        FactRiskPredictions[Predicted_Disaster_Class] = 1
+    )
+RETURN
+    DIVIDE(TruePositives, TotalAlerts, 0)
+
+False_Alarm_Rate = 1 - [Alert_Precision]
+
+Expected_Economic_Risk_M_USD = SUM(FactRiskPredictions[Expected_Economic_Risk_Million])
+
+// ----------------------------------------------------------------------------
+// 3. REGIONAL & DISTRICT PRIORITY PLANNING
+// ----------------------------------------------------------------------------
+
+Districts_Count = DISTINCTCOUNT(DimGeography[District])
+
+High_Priority_Districts = 
+CALCULATE(
+    DISTINCTCOUNT(DimGeography[District]),
+    DimGeography[Policy_Quadrant] = "High Risk - Low Preparedness (Priority 1)"
+)
+
+Risk_Preparedness_Gap = [Average_Disaster_Risk_Score] - AVERAGE(FactDistrictMonthRisk[Preparedness_Score])
+
+// ----------------------------------------------------------------------------
+// 4. CALIBRATION & BENCHMARKS
+// ----------------------------------------------------------------------------
+
+Historical_Disaster_Prevalence = 
+DIVIDE(
+    CALCULATE(COUNT(FactDistrictMonthRisk[Record_ID]), FactDistrictMonthRisk[Disaster_Occurred] = 1),
+    COUNT(FactDistrictMonthRisk[Record_ID]),
+    0
+)
+
+Brier_Score_Model = 
+VAR SquaredErrors = 
+    SUMX(
+        FactRiskPredictions,
+        POWER(FactRiskPredictions[Predicted_Disaster_Probability] - FactRiskPredictions[Actual_Disaster_Occurred], 2)
+    )
+RETURN
+    DIVIDE(SquaredErrors, COUNT(FactRiskPredictions[Prediction_ID]), 0)
+
+Brier_Score_Null = 
+VAR Prevalence = [Historical_Disaster_Prevalence]
+RETURN
+    Prevalence * (1 - Prevalence)
+
+Brier_Skill_Score = 
+VAR BS_Model = [Brier_Score_Model]
+VAR BS_Null = [Brier_Score_Null]
+RETURN
+    DIVIDE(BS_Null - BS_Model, BS_Null, 0)
