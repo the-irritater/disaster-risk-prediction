@@ -1,9 +1,4 @@
 {
-  "spearman_rho": 0.9892,
-  "spearman_p": 1.3736272105221043e-83,
-  "mean_simulated_spearman": 0.9128,
-  "std_simulated_spearman": 0.0661,
-  "top_10_stability_index": 0.687,
   "district_summaries": [
     {
       "District": "D_001",
@@ -705,5 +700,10 @@
       "Rank_CI_Lower": 29.0,
       "Rank_CI_Upper": 83.0
     }
-  ]
+  ],
+  "mean_simulated_spearman": 0.9128,
+  "spearman_p": 1.3736272105221043e-83,
+  "spearman_rho": 0.9892,
+  "std_simulated_spearman": 0.0661,
+  "top_10_stability_index": 0.687
 }
