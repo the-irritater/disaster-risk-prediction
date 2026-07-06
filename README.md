@@ -42,7 +42,7 @@ All outputs (data, models, images, reports) are regenerated deterministically.
 ## Project Structure
 
 ```text
-disaster-risk-prediction-dashboard/
+disaster-risk-prediction/
 │
 ├── data/
 │   ├── disaster_risk_data.csv                 # Raw synthetic panel (13,200 rows)
