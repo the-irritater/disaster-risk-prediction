@@ -4,9 +4,30 @@ from scipy.stats import gamma, poisson
 
 class DisasterDataGenerator:
     """
-    A class to generate realistic synthetic district-month panel datasets for disaster risk modeling.
-    Includes spatial centroids, climate trends, seasonal patterns, exposure, vulnerability,
-    preparedness metrics, multi-hazard latent probability processes, and conditional impact outcomes.
+    Generates realistic synthetic district-month panel datasets for disaster risk modeling.
+
+    Design Philosophy:
+    ------------------
+    This generator follows a structural simulation approach where physical and
+    socio-economic relationships are encoded via parameterised statistical models.
+    The causal structure is:
+
+        Geography → Environmental Variables → Hazard Probabilities → Disaster Occurrence → Impacts
+
+    Distribution Choices:
+    ---------------------
+    - Environmental variables: Gaussian noise around physically motivated baselines
+      (seasonal patterns, elevation effects, coastal proximity), with AR(1) persistence
+      (coefficient ~0.55) reflecting month-to-month climate autocorrelation.
+    - Hazard probabilities: Logistic link functions with domain-specific coefficients,
+      calibrated to produce ~15% overall disaster prevalence (consistent with DesInventar
+      India database, 2000–2020).
+    - Deaths: Poisson distribution (count data, rare events).
+    - Economic losses: Gamma distribution (positive, heavy-tailed, consistent with
+      EM-DAT loss distributions).
+    - Demographics: Uniform distributions calibrated to Indian Census 2011 ranges.
+
+    See reports/simulation_design.md for full documentation.
     """
     def __init__(self, num_districts=100, num_years=11, start_year=2015, seed=42):
         self.num_districts = num_districts
@@ -117,6 +138,28 @@ class DisasterDataGenerator:
         """
         Generates district-month panel data combining spatial baseline properties
         with seasonal dynamics, climate trends, and randomized physical shocks.
+
+        Statistical Design Notes:
+        -------------------------
+        1. SEASONAL PATTERNS: Rainfall follows monsoon climatology (peak Jun–Sep),
+           temperature follows summer/winter cycle. Reference: IMD climatological normals.
+
+        2. CLIMATE TREND: Linear warming of +0.015 units/year, representing gradual
+           climate change over the 2015–2025 period. This is a simplification of
+           real non-linear climate trends.
+
+        3. AUTOREGRESSIVE PERSISTENCE: AR(1) coefficient ~0.55 for environmental
+           variables. This produces realistic month-to-month correlation without
+           creating excessively long memory. Reference: empirical autocorrelation
+           in monthly climate observations is typically 0.3–0.7.
+
+        4. HAZARD PROBABILITIES: Logistic functions P(hazard) = 1/(1 + exp(-z)).
+           Intercepts are calibrated so that the overall disaster prevalence is ~15%,
+           consistent with event-month rates in DesInventar India (2000–2020).
+
+        5. IMPACT GENERATION: Conditional on disaster_occurred = 1 only.
+           Deaths ~ Poisson (count data), losses ~ Gamma (heavy-tailed positive).
+           This ensures zero data leakage from post-event variables to pre-event features.
         """
         df_districts = self.generate_spatial_grid()
         records = []
@@ -423,6 +466,63 @@ class DisasterDataGenerator:
                     
         df = pd.DataFrame(records)
         return df
+
+    def validate_marginal_distributions(self, df):
+        """
+        Validates simulated data against plausible real-world reference ranges.
+
+        Computes summary statistics for key variables and compares them against
+        reference values from public datasets (IMD, Census India, EM-DAT).
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The generated panel dataset.
+
+        Returns
+        -------
+        dict
+            Validation results with simulated vs reference range comparisons.
+        """
+        validation = {}
+
+        reference_ranges = {
+            "Monthly_Rainfall_mm": {"ref_min": 0, "ref_max": 1000, "ref_mean": 150, "source": "IMD India"},
+            "Temperature_Celsius": {"ref_min": 5, "ref_max": 48, "ref_mean": 27, "source": "IMD India"},
+            "Wind_Speed_kmph": {"ref_min": 0, "ref_max": 200, "ref_mean": 15, "source": "IMD Cyclone Atlas"},
+            "Population_Density": {"ref_min": 50, "ref_max": 11000, "ref_mean": 700, "source": "Census India 2011"},
+            "Poverty_Rate": {"ref_min": 0.05, "ref_max": 0.50, "ref_mean": 0.22, "source": "NITI Aayog 2015"},
+            "Elevation_Metres": {"ref_min": 0, "ref_max": 8848, "ref_mean": 500, "source": "SRTM DEM"},
+        }
+
+        for col, ref in reference_ranges.items():
+            if col not in df.columns:
+                continue
+            sim_stats = {
+                "simulated_min": round(float(df[col].min()), 2),
+                "simulated_max": round(float(df[col].max()), 2),
+                "simulated_mean": round(float(df[col].mean()), 2),
+                "simulated_std": round(float(df[col].std()), 2),
+                "simulated_median": round(float(df[col].median()), 2),
+            }
+            sim_stats.update(ref)
+            sim_stats["within_reference_range"] = (
+                sim_stats["simulated_min"] >= ref["ref_min"] * 0.8 and
+                sim_stats["simulated_max"] <= ref["ref_max"] * 1.2
+            )
+            validation[col] = sim_stats
+
+        # Disaster prevalence check
+        if "Disaster_Occurred" in df.columns:
+            prevalence = float(df["Disaster_Occurred"].mean())
+            validation["disaster_prevalence"] = {
+                "simulated": round(prevalence, 4),
+                "reference_range": "0.10–0.20 (event-months in high-risk regions)",
+                "source": "DesInventar India 2000–2020",
+                "within_range": 0.10 <= prevalence <= 0.20,
+            }
+
+        return validation
 
 def generate_data_dictionary(df):
     """

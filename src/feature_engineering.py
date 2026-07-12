@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+import json
+import os
+from scipy.stats import spearmanr
 
 def calculate_rates(df):
     """
@@ -29,6 +32,37 @@ def construct_risk_index(df, fit_scalers=None):
     """
     Constructs standardized component scores and the overall Disaster Risk Score
     using the hazard-exposure-vulnerability-preparedness framework.
+
+    Literature Justification:
+    -------------------------
+    The composite risk index follows the internationally recognised
+    Hazard-Exposure-Vulnerability-Capacity (HEVC) paradigm:
+
+    - UNDRR Sendai Framework for Disaster Risk Reduction 2015–2030:
+      Risk = f(Hazard, Exposure, Vulnerability, Capacity)
+      https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030
+
+    - INFORM Risk Index (European Commission JRC, 2023):
+      Uses a three-dimensional model (Hazard & Exposure, Vulnerability, Lack of Coping Capacity)
+      with geometric aggregation. Our additive weighted approach is a simplification.
+      https://drmkc.jrc.ec.europa.eu/inform-index
+
+    - Cardona, O.D. et al. (2012). "Determinants of risk: exposure and vulnerability."
+      In IPCC SREX Report, Ch. 2. Cambridge University Press.
+
+    Weight Rationale (Expert-specified, default):
+      - Hazard (0.30): Primary driver; without a hazard trigger, no disaster occurs.
+      - Exposure (0.25): Population and infrastructure at risk amplify impact.
+      - Vulnerability (0.25): Socio-economic fragility determines damage severity.
+      - Preparedness Deficit (0.20): Slightly lower weight because preparedness
+        mitigates (rather than causes) risk.
+
+    These weights are assessed for robustness via:
+      1. Rank-correlation sensitivity analysis (equal vs expert weights)
+      2. Dirichlet Monte Carlo perturbation (see src/uncertainty.py)
+      3. Component knockout analysis (see sensitivity_analysis_component_knockout)
+      4. Weight sweep analysis (see sensitivity_analysis_weight_sweep)
+
     If fit_scalers is provided (a dict of min/max values), it uses them to prevent leakage.
     Returns the dataframe with scores and the scaler parameters if fit_scalers was None.
     """
@@ -103,12 +137,20 @@ def construct_risk_index(df, fit_scalers=None):
     df_scores["Preparedness_Score"] = (scaled_vals["shelter_rate"] + scaled_vals["hospital_rate"] + scaled_vals["rescue_rate"] + ews_val + evac_val) / 5.0
     df_scores["Preparedness_Deficit_Score"] = 100.0 - df_scores["Preparedness_Score"]
     
-    # Construct Overall Descriptive Risk Score
+    # Construct Overall Descriptive Risk Score (expert weights)
     df_scores["Disaster_Risk_Score"] = (
         0.30 * df_scores["Hazard_Score"] +
         0.25 * df_scores["Exposure_Score"] +
         0.25 * df_scores["Vulnerability_Score"] +
         0.20 * df_scores["Preparedness_Deficit_Score"]
+    )
+
+    # Equal-weighted alternative for sensitivity comparison
+    df_scores["Equal_Weighted_Risk"] = (
+        0.25 * df_scores["Hazard_Score"] +
+        0.25 * df_scores["Exposure_Score"] +
+        0.25 * df_scores["Vulnerability_Score"] +
+        0.25 * df_scores["Preparedness_Deficit_Score"]
     )
     
     # Define Risk Categories based on quantile thresholds
@@ -137,6 +179,137 @@ def construct_risk_index(df, fit_scalers=None):
     if fit_scalers is None:
         return df_scores, scalers
     return df_scores
+
+
+def sensitivity_analysis_component_knockout(df):
+    """
+    Component-knockout sensitivity analysis for the Disaster Risk Index.
+
+    Removes each component one at a time, re-weights the remaining components
+    proportionally, and measures rank correlation (Spearman's rho) with the
+    full-index ranking. High rho indicates robustness; low rho indicates that
+    the knocked-out component materially affects district rankings.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Must contain Hazard_Score, Exposure_Score, Vulnerability_Score,
+        Preparedness_Deficit_Score, Disaster_Risk_Score, District.
+
+    Returns
+    -------
+    dict
+        Per-component knockout results.
+    """
+    component_cols = [
+        "Hazard_Score", "Exposure_Score",
+        "Vulnerability_Score", "Preparedness_Deficit_Score"
+    ]
+    expert_weights = {"Hazard_Score": 0.30, "Exposure_Score": 0.25,
+                      "Vulnerability_Score": 0.25, "Preparedness_Deficit_Score": 0.20}
+
+    # Aggregate to district-level means
+    district_means = df.groupby("District")[component_cols + ["Disaster_Risk_Score"]].mean()
+    full_ranks = district_means["Disaster_Risk_Score"].rank(ascending=False)
+
+    results = {}
+    for knockout_col in component_cols:
+        remaining = [c for c in component_cols if c != knockout_col]
+        remaining_weights = {c: expert_weights[c] for c in remaining}
+        # Re-normalise weights to sum to 1
+        w_sum = sum(remaining_weights.values())
+        remaining_weights = {c: w / w_sum for c, w in remaining_weights.items()}
+
+        # Compute knockout risk score
+        knockout_score = sum(
+            remaining_weights[c] * district_means[c] for c in remaining
+        )
+        knockout_ranks = knockout_score.rank(ascending=False)
+
+        rho, p_val = spearmanr(full_ranks, knockout_ranks)
+        results[knockout_col] = {
+            "spearman_rho": round(float(rho), 4),
+            "p_value": float(p_val),
+            "renormalised_weights": {c: round(w, 4) for c, w in remaining_weights.items()},
+            "interpretation": (
+                f"Removing {knockout_col} {'minimally' if rho > 0.95 else 'moderately' if rho > 0.85 else 'substantially'} "
+                f"affects district rankings (ρ={rho:.3f})."
+            ),
+        }
+
+    return results
+
+
+def sensitivity_analysis_weight_sweep(df, sweep_range=None, n_steps=21):
+    """
+    Weight sweep sensitivity analysis.
+
+    Varies each component weight from 0% to 200% of its expert value
+    (in steps), holding others proportionally adjusted, and computes
+    rank correlation with the baseline ranking.
+
+    Produces data suitable for a weight sensitivity heatmap.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Must contain component scores and Disaster_Risk_Score.
+    sweep_range : tuple, optional
+        (min_multiplier, max_multiplier). Default (0.0, 2.0).
+    n_steps : int
+        Number of steps in the sweep.
+
+    Returns
+    -------
+    dict
+        Sweep results with multipliers and rank correlations per component.
+    """
+    if sweep_range is None:
+        sweep_range = (0.0, 2.0)
+
+    component_cols = [
+        "Hazard_Score", "Exposure_Score",
+        "Vulnerability_Score", "Preparedness_Deficit_Score"
+    ]
+    expert_weights = {"Hazard_Score": 0.30, "Exposure_Score": 0.25,
+                      "Vulnerability_Score": 0.25, "Preparedness_Deficit_Score": 0.20}
+
+    district_means = df.groupby("District")[component_cols + ["Disaster_Risk_Score"]].mean()
+    full_ranks = district_means["Disaster_Risk_Score"].rank(ascending=False)
+
+    multipliers = np.linspace(sweep_range[0], sweep_range[1], n_steps)
+
+    sweep_results = {}
+    for target_col in component_cols:
+        rhos = []
+        for mult in multipliers:
+            # Adjust the target weight
+            adjusted_weights = dict(expert_weights)
+            adjusted_weights[target_col] = expert_weights[target_col] * mult
+
+            # Re-normalise so weights sum to 1
+            w_sum = sum(adjusted_weights.values())
+            if w_sum == 0:
+                rhos.append(0.0)
+                continue
+            adjusted_weights = {c: w / w_sum for c, w in adjusted_weights.items()}
+
+            # Compute adjusted risk score
+            adj_score = sum(
+                adjusted_weights[c] * district_means[c] for c in component_cols
+            )
+            adj_ranks = adj_score.rank(ascending=False)
+            rho, _ = spearmanr(full_ranks, adj_ranks)
+            rhos.append(round(float(rho), 4))
+
+        sweep_results[target_col] = {
+            "multipliers": [round(float(m), 2) for m in multipliers],
+            "spearman_rhos": rhos,
+            "min_rho": min(rhos),
+            "most_sensitive_multiplier": round(float(multipliers[np.argmin(rhos)]), 2),
+        }
+
+    return sweep_results
 
 def engineer_features(df):
     """

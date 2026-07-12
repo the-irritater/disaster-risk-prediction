@@ -5,7 +5,7 @@
 | **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.1 |
+| **Version** | 3.2 |
 | **Status** | Research Submission (Simulation-Based) |
 
 > **Simulation-based analytics prototype.** This project uses entirely synthetic data
@@ -63,9 +63,12 @@ disaster-risk-prediction/
 │   ├── data_generation.py                     # DisasterDataGenerator engine
 │   ├── preprocessing.py                       # Cleaning and structural checks
 │   ├── feature_engineering.py                 # Rates, scores, lag construction
-│   ├── train_models.py                        # Classifier and regressor pipelines
+│   ├── train_models.py                        # Classifier and regressor pipelines (RF, XGB, GBM, LightGBM)
 │   ├── evaluate_models.py                     # Metrics, calibration, curves
 │   ├── predict_risk.py                        # CLI inference utility
+│   ├── uncertainty.py                         # Monte Carlo (Dirichlet), bootstrap prediction intervals
+│   ├── ablation.py                            # Feature-group ablation & permutation importance
+│   ├── advanced_evaluation.py                 # Calibration comparison, DCA, spatial validation, robustness
 │   ├── build_notebooks.py                     # Notebook generator (with student interpretations)
 │   ├── execute_notebooks.py                   # Automated notebook execution
 │   └── generate_reports.py                    # Report generator (from outputs/)
@@ -76,23 +79,22 @@ disaster-risk-prediction/
 ├── reports/
 │   ├── statistical_analysis_report.md         # Full hypothesis testing report
 │   ├── model_evaluation_report.md             # Classification and regression results
-│   └── final_project_report.md                # Comprehensive project report
+│   ├── final_project_report.md                # Comprehensive project report
+│   ├── simulation_design.md                   # DGP documentation & validation
+│   └── ethical_considerations.md              # Responsible AI & deployment ethics
 │
 ├── images/                                    # Generated visualisations
-│   ├── disaster_distribution.png
-│   ├── bivariate_boxplots.png
-│   ├── roc_curve.png
-│   ├── precision_recall_curve.png
-│   ├── calibration_plot.png
-│   └── shap_summary.png
 │
-├── tests/                                     # Automated test suite (11 tests)
+├── tests/                                     # Automated test suite
 │   ├── test_data_generation.py
 │   ├── test_data_quality.py
 │   ├── test_feature_engineering.py
 │   ├── test_no_leakage.py
 │   ├── test_model_pipeline.py
-│   └── test_prediction_schema.py
+│   ├── test_prediction_schema.py
+│   ├── test_csv_roundtrip.py
+│   ├── test_uncertainty.py                    # Dirichlet MC, convergence, CI ordering
+│   └── test_advanced_evaluation.py            # DCA, cost analysis, spatial validation
 │
 ├── requirements.txt                           # Python dependencies
 ├── README.md                                  # This document
@@ -154,6 +156,9 @@ across documents.
 | `outputs/regression_metrics.json` | Model evaluation report, final report |
 | `outputs/cluster_summary.json` | Model evaluation report, final report |
 | `outputs/sensitivity_results.json` | Final report |
+| `outputs/uncertainty_results.json` | Uncertainty quantification results |
+| `outputs/ablation_results.json` | Feature-group ablation & permutation importance |
+| `outputs/advanced_evaluation_results.json` | Calibration, DCA, spatial, robustness |
 
 ---
 
@@ -169,6 +174,12 @@ across documents.
 | December 2025 rows dropped | Target requires January 2026 (unavailable) |
 | Bootstrap CIs by district (cluster bootstrap) | Respects within-district dependence |
 | Brier Skill Score against prevalence baseline | Context for calibration claims |
+| Dirichlet weight perturbation for risk index MC | Statistically principled (weights sum to 1) |
+| Risk index based on UNDRR Sendai / INFORM framework | Literature-justified HEVC paradigm |
+| 5 classifier baselines (LR, RF, XGB, GBM, LightGBM) | Comprehensive model comparison |
+| Feature-group ablation study | Quantifies contribution of each variable family |
+| Decision Curve Analysis | Assesses operational utility beyond discrimination |
+| Cost-sensitive FP/FN analysis | Precautionary principle for disaster warnings |
 
 ---
 
@@ -179,6 +190,40 @@ across documents.
 3. **Simplified spatial weights** — KNN on centroids; no district boundary polygons.
 4. **Small test set** — 1,100 rows (11 months × 100 districts).
 5. **Index circularity** — the risk score correlates with its own components by construction.
+6. **Regression R² is low** — economic loss prediction explains limited variance; this is expected for heavy-tailed disaster data and is explicitly acknowledged.
+
+---
+
+## Uncertainty Quantification
+
+The project includes three uncertainty quantification methods (`src/uncertainty.py`):
+
+1. **Dirichlet Monte Carlo** — Risk index weights are perturbed via Dirichlet distribution (concentration=50, N=1000), producing per-district risk score credible intervals and rank stability analysis.
+2. **Bootstrap prediction intervals** — Cluster-resampled (by district) intervals for classifier probabilities.
+3. **Bootstrap regression intervals** — Prediction intervals for economic loss estimates.
+
+Convergence diagnostics verify estimate stability at N=100, 200, 500, 1000.
+
+---
+
+## Simulation Design Rationale
+
+Full documentation of the data-generating process is in [`reports/simulation_design.md`](reports/simulation_design.md), including:
+- Causal DAG and distribution rationale for each variable family
+- Logistic hazard probability coefficients and calibration targets
+- Marginal distribution validation against reference datasets (IMD, Census India, EM-DAT)
+- Known simplifications and their implications
+
+---
+
+## Ethical Considerations
+
+See [`reports/ethical_considerations.md`](reports/ethical_considerations.md) for discussion of:
+- Risks of deploying synthetic-data models
+- Socio-economic bias in the simulation design
+- Responsible AI principles (transparency, accountability, fairness, human oversight)
+- Model governance and auditability
+- The "cry wolf" problem with high false positive rates
 
 ---
 
@@ -195,6 +240,42 @@ The test suite validates:
 - No leakage of post-event outcomes into pre-event predictors
 - Model pipeline produces valid probability outputs
 - Prediction schema matches expected format
+- CSV round-trip integrity
+- Dirichlet weight samples sum to 1.0 and converge to expert weights
+- Monte Carlo risk score CIs are properly ordered
+- Monte Carlo convergence diagnostics show stabilisation
+- Decision Curve Analysis produces valid net benefit curves
+- Cost-sensitive analysis finds optimal thresholds under asymmetric loss
+- Regression assumption checks return complete diagnostics
+- Spatial validation returns valid Moran's I statistics
+
+---
+
+## Frequently Asked Questions
+
+### Why synthetic data instead of real disaster records?
+
+Real-world disaster datasets (EM-DAT, DesInventar, SHELDUS) lack the district-month granularity and complete covariate coverage needed for panel modelling. Synthetic data allows controlled experimentation where the ground-truth data-generating process is known. See `reports/simulation_design.md` for full justification.
+
+### How were simulation parameters chosen?
+
+Distribution parameters are calibrated against reference ranges from IMD (climate), Census India (demographics), and DesInventar (disaster frequency). Logistic coefficients in the hazard probability models are tuned to produce ~15% disaster prevalence. AR(1) persistence coefficients (~0.55) reflect empirical month-to-month climate autocorrelation.
+
+### Is the risk index validated against established frameworks?
+
+The risk index follows the UNDRR Sendai Framework and INFORM Risk Index methodology (HEVC paradigm). Weight sensitivity is assessed via: (1) equal vs expert weight Spearman correlation, (2) Dirichlet Monte Carlo perturbation, (3) component knockout analysis, (4) 0%–200% weight sweep.
+
+### How does the model generalise beyond simulated scenarios?
+
+It does not — and this is explicitly stated throughout the reports. The project demonstrates a complete analytical pipeline; generalisation claims would require validation against real disaster records.
+
+### Why Random Forest / XGBoost rather than spatiotemporal models?
+
+The project compares 5 classifiers (Logistic Regression, Random Forest, XGBoost, Gradient Boosting, LightGBM). Temporal structure is captured via lag features and rolling windows. Spatial structure is encoded via geographic features. Full spatiotemporal models (e.g., LSTM, GNNs) are identified as future work.
+
+### How are spatial and temporal dependencies handled?
+
+Spatial: geographic features (elevation, coastal distance, river distance, coordinates). Temporal: lag features (t-1 disaster occurrence and severity), rolling 12-month disaster count, seasonal encoding. Panel structure is respected via cluster-robust standard errors and cluster bootstrap.
 
 ---
 

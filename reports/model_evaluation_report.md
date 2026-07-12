@@ -8,13 +8,17 @@
 | **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.1 |
+| **Version** | 3.2 |
 | **Status** | Research Submission (Simulation-Based) |
 
 
 > **Simulation disclaimer.** All data in this project are synthetically generated.
 > Strong model performance partly reflects recovery of programmed relationships
 > rather than validated generalisation to real disaster data.
+>
+> **Language convention**: "Predicts" and "classifies" describe the model's behaviour
+> on simulated data. They do not constitute validated forecasting capability
+> for real-world disasters.
 
 ---
 
@@ -61,8 +65,26 @@ to target ≥ 75% recall).
 | Precision | 0.3880 | [0.3426, 0.4328] |
 | Recall | 0.8114 | [0.7443, 0.8753] |
 | F1-score | 0.5250 | [0.4769, 0.5688] |
+| F2-score | ~0.68 | — |
 | Accuracy | 0.7664 | — |
+| Balanced Accuracy | 0.7448 | — |
+| MCC | 0.4297 | — |
 | Brier score | 0.0937 | — |
+
+**Metric rationale**:
+- **F2 score** (β=2): Weighs recall twice as heavily as precision, appropriate for disaster
+  prediction where missing events is costlier than false alarms.
+- **MCC (Matthews Correlation Coefficient)**: Balanced measure accounting for all four
+  confusion matrix quadrants; robust to class imbalance.
+- **Balanced Accuracy**: Average of sensitivity and specificity; avoids inflation from
+  the majority class.
+
+**Bootstrap CI methodology**: 95% confidence intervals are computed via the **percentile
+method** with N=1,000 bootstrap resamples. Resampling is **clustered by district** (100
+district clusters resampled with replacement) to respect the panel structure. District-level
+resampling was chosen because observations within the same district share unobserved
+geographic and socio-economic effects; row-level resampling would underestimate standard
+errors.
 
 ### 2.3 Confusion Matrix (Test Set)
 
@@ -73,6 +95,26 @@ to target ≥ 75% recall).
 
 Total test observations: 1100
 - **False Discovery Rate (FDR)**: 0.6120 (61.2% of flagged districts are false alarms). This highlights the operational trade-off: high sensitivity to capture disasters (recall=0.81) comes at the cost of a high false alarm rate.
+
+### 2.4 Precision-Recall Tradeoff Justification
+
+The high FDR is **deliberately accepted** based on the following reasoning:
+
+1. **Asymmetric costs**: In disaster early warning, the cost of a **false negative**
+   (failing to warn a population about an imminent disaster) vastly exceeds the cost of
+   a **false positive** (triggering unnecessary preparedness measures). Under a conservative
+   100:1 FN:FP cost ratio, the optimal threshold is well below 0.50.
+
+2. **Precautionary principle**: The UNDRR Sendai Framework and WHO guidelines for
+   health emergencies both endorse the precautionary approach: when the potential harm
+   from inaction is severe and irreversible, lower decision thresholds are appropriate.
+
+3. **Operational context**: A false positive triggers an inspection or preparedness
+   response (cost: resources and time). A false negative means unmitigated disaster
+   impact (cost: lives, infrastructure, economic damage).
+
+4. **Cost-sensitive analysis**: Under the 100:1 cost ratio, the cost-optimal threshold
+   is computed in `src/advanced_evaluation.py` and reported in `outputs/advanced_evaluation_results.json`.
 
 ### 2.4 Calibration Assessment & Operational Benchmark
 
@@ -122,6 +164,15 @@ The regressor was evaluated exactly once on the held-out test events (disaster-e
 
 Event counts — Train: 1494, Validation: 362, Test: 180
 
+> **Explicit Acknowledgment**: The R² of 0.17 is low — the regression explains only
+> ~17% of variance in economic loss. This is scientifically expected: disaster economic
+> losses are inherently heavy-tailed (Shapiro-Wilk p < 0.001, indicating significant
+> deviation from normality), driven largely by unobserved factors such as exact impact
+> location, local response quality, and pre-existing infrastructure condition.
+> The regression is presented as an **exploratory association analysis**, not a
+> reliable predictor. See `outputs/advanced_evaluation_results.json` for full
+> assumption checks (normality, homoscedasticity, Cook's distance).
+
 ---
 
 ## 4. Explainability and District Typologies
@@ -170,6 +221,84 @@ SHAP values indicate the model's reliance on each feature for prediction. Higher
 | Data leakage | Post-event impacts excluded from predictors; scalers fit on training only |
 | Temporal leakage | Chronological split; no future data in training |
 | Multiple testing | Validation set used for model/threshold selection; test set evaluated once |
-| Panel dependency | Bootstrap CIs resampled by district, not by row |
+| Panel dependency | Bootstrap CIs resampled by district, not by row (N=1000, percentile method) |
 | Overfitting | XGBoost with balanced class weights; threshold optimised on validation |
 | Synthetic data | All findings conditional on the simulated data-generating process |
+| Class imbalance | Balanced class weights, threshold tuned for ≥75% recall, F2 score reported |
+
+---
+
+## 6. Risk Index Circularity Warning
+
+> **This is a serious methodological concern that must be understood when interpreting results.**
+
+The Disaster_Risk_Score is computed as:
+
+```
+Risk = 0.30·Hazard + 0.25·Exposure + 0.25·Vulnerability + 0.20·Preparedness_Deficit
+```
+
+where each component score is itself derived from the same underlying features used as
+ML predictors. This creates **partial circularity**:
+
+| Target Variable | Circularity Risk | Explanation |
+| --- | --- | --- |
+| Disaster_Risk_Score | ⚠️ **HIGH** | Model learns the weighted-sum formula that created the target |
+| Risk_Category | ⚠️ **HIGH** | Quantile-binned risk score; same circularity |
+| **Disaster_Next_Month** | ✅ **LOW** | Derived from the hazard probability model (logistic), not the risk index |
+| Economic_Loss | ✅ **LOW** | Generated from the impact model conditional on disaster occurrence |
+
+**Key distinction**: The primary classification target (`Disaster_Next_Month`) does NOT
+suffer from index circularity. It is generated by a separate logistic hazard probability
+model that depends on environmental triggers and geography, not on the risk index.
+The risk index is a descriptive summary used for district profiling, not as a prediction
+target for the ML classifier.
+
+The regression target (Economic_Loss) is also circularity-free: it is generated
+conditionally on disaster occurrence from the impact model.
+
+---
+
+## 7. Clustering Methodology
+
+### 7.1 Method Selection
+
+**Algorithm**: K-Means on standardised district-level score profiles (Hazard, Exposure,
+Vulnerability, Preparedness). Standardisation via z-scores ensures equal contribution.
+
+### 7.2 Choice of K
+
+| Diagnostic | Method | Result |
+| --- | --- | --- |
+| Silhouette analysis | k=2 through k=7 | All scores < 0.25 (weak separation) |
+| Best k (silhouette) | k=7 | Silhouette = 0.2374 |
+| Recommended k | k=4 | Silhouette = 0.2236 (marginally lower, but balanced sizes) |
+| Davies-Bouldin | Computed for all k | Supports k=4–7 range |
+| Inertia (elbow) | Computed alongside silhouette | No sharp elbow (consistent with weak separation) |
+
+**Rationale for k=4 over k=7**: k=7 produces thin clusters of ~10 districts, limiting
+policy utility. k=4 yields balanced clusters of 21–27 districts with only a marginal
+silhouette decrease (0.2374 → 0.2236).
+
+### 7.3 Cluster Quality Disclosure
+
+> **Silhouette scores < 0.25 indicate that districts lie along a multidimensional continuum
+> rather than forming discrete, well-separated groups.** The cluster typologies should be
+> interpreted as approximate characterisations of a continuous risk landscape, not as
+> hard category boundaries.
+
+**Stability considerations**: Cluster assignments are deterministic (fixed random_state=42).
+Formal stability testing (e.g., consensus clustering, bootstrap stability) is identified
+as future work.
+
+---
+
+## 8. External Applicability
+
+> The pipeline is **transferable**; the numerical results are **not**.
+
+The model training architecture, evaluation methodology, and reporting framework can
+be applied to real disaster datasets. All specific coefficients, thresholds, and
+performance metrics would need to be re-estimated on real data.
+
+See `reports/statistical_analysis_report.md` §7 for full external applicability discussion.

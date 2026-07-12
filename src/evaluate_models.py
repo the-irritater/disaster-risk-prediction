@@ -60,6 +60,12 @@ def calculate_classification_metrics(y_true, y_prob, threshold=0.5):
     denom = np.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
     mcc = (tp * tn - fp * fn) / denom if denom > 0 else 0.0
     
+    # F2 score (beta=2: weighs recall higher than precision)
+    # Appropriate for disaster prediction where missing events is costlier than false alarms
+    beta = 2.0
+    f2_denom = (beta**2 * precision + recall)
+    f2 = ((1 + beta**2) * precision * recall) / f2_denom if f2_denom > 0 else 0.0
+    
     ece = calculate_ece(y_true, y_prob)
     
     return {
@@ -69,6 +75,7 @@ def calculate_classification_metrics(y_true, y_prob, threshold=0.5):
         "recall": float(recall),
         "specificity": float(specificity),
         "f1_score": float(f1),
+        "f2_score": float(f2),
         "roc_auc": float(roc_auc),
         "pr_auc": float(pr_auc),
         "brier_score": float(brier),

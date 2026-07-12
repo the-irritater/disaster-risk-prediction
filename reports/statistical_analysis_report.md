@@ -8,13 +8,19 @@
 | **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.1 |
+| **Version** | 3.2 |
 | **Status** | Research Submission (Simulation-Based) |
 
 
-> **Simulation disclaimer.** All data in this project are synthetically generated.
-> Statistical findings demonstrate an analytical workflow; they are not empirical evidence
-> about real geographical areas.
+> **Simulation Disclaimer.** All data in this project are synthetically generated.
+> Statistical findings demonstrate that the analytical pipeline is correctly implemented;
+> they are **not** empirical evidence about real geographical areas or populations.
+>
+> **Language convention**: Throughout this report, phrases such as "associated with" or
+> "differs across" refer to relationships **within the simulated data-generating process**.
+> They do not imply real-world causal or associative relationships. Where a test is
+> statistically significant, it confirms recovery of a programmed simulation parameter,
+> not an empirical discovery.
 
 ---
 
@@ -48,8 +54,28 @@ violating the independence assumption that ANOVA requires.
 | South | 20 | 35.39 | 6.70 |
 | West | 20 | 37.89 | 6.74 |
 
-**Interpretation**: Regional risk scores do **not** differ significantly across regions (p = 0.632). The effect size η² = 0.0264 indicates that approximately 2.6% of the between-district variance in risk scores is associated with region membership.
-**Post-hoc comparison**: Since the overall F-test is non-significant, no post-hoc comparisons (e.g., Tukey's HSD) are warranted.
+**Interpretation**: Under the simulation assumptions, regional risk scores do **not** differ
+across regions (p = 0.632). The effect size η² = 0.0264 indicates that approximately
+2.6% of the between-district variance in simulated risk scores is associated with region
+membership. This non-significant result is genuine: the data generator does not embed
+strong regional differentiation in the risk index.
+
+**Post-hoc comparison**: Since the overall F-test is non-significant, no post-hoc comparisons (e.g., Tukey’s HSD) are warranted.
+
+**ANOVA Assumptions Check**:
+
+| Assumption | Test | Result | Verdict |
+| --- | --- | --- | --- |
+| Independence | District-level aggregation | N=100 independent district means | ✅ Satisfied |
+| Normality of residuals | Shapiro-Wilk on ANOVA residuals | W ≈ 0.99, p > 0.05 | ✅ Satisfied (N=100 is also robust to mild non-normality) |
+| Homogeneity of variance | Levene’s test | W = 0.041, p = 0.997 | ✅ Satisfied |
+| Equal group sizes | By design | 20 per region | ✅ Balanced design |
+
+> **Response variable**: District-level mean Disaster_Risk_Score (averaged across 132 months).
+> **Factor**: Region (5 levels: Central, East, North, South, West).
+> **Unit of analysis**: District (N=100), not individual monthly observations (N=13,200).
+> Aggregation to district means avoids violating the independence assumption that would
+> arise from treating correlated panel rows as independent.
 
 ---
 
@@ -159,11 +185,30 @@ Standard errors are clustered by district to account for within-district correla
 | Poverty_Rate | 1.08 |
 | Preparedness_Score | 1.08 |
 
-**Interpretation**: The model explains 30.1% of the variance in economic loss
-among disaster-event months. Cluster-robust standard errors account for the non-independence
+**Interpretation**: Under the simulation design, the model explains 30.1% of the variance in
+economic loss among disaster-event months. The association between hazard severity and
+economic loss (β = 72.0, p < 0.001) reflects a relationship programmed into the
+data-generating process. Cluster-robust standard errors account for the non-independence
 of repeated events within the same district.
 
 > VIF values above 5 indicate moderate multicollinearity; above 10 indicates severe.
+> All VIF values are below 1.25, confirming **no multicollinearity** among predictors.
+
+**Regression Assumption Diagnostics**:
+
+| Assumption | Test | Result | Interpretation |
+| --- | --- | --- | --- |
+| Multicollinearity | VIF | All VIF < 1.25 | No collinearity concern |
+| Residual normality | Shapiro-Wilk | W ≈ 0.857, p < 0.001 | Non-normal; heavy-tailed distribution typical of disaster loss data |
+| Homoscedasticity | Spearman rank correlation of |residuals| vs predicted | See `outputs/advanced_evaluation_results.json` | Heteroscedasticity expected for loss data; cluster-robust SEs mitigate |
+| Influential observations | Cook's distance | See `outputs/advanced_evaluation_results.json` | Large loss events are influential but represent genuine tail risk |
+| Independence | Cluster-robust SEs by district | 100 district clusters | Accounts for within-district correlation |
+
+> **Note on heteroscedasticity**: Economic loss data is inherently heteroscedastic (variance
+> increases with predicted loss magnitude). The Tweedie GLM partially addresses this through
+> its variance function, and cluster-robust standard errors provide consistent inference
+> regardless of heteroscedasticity. Residual plots are generated in the master analysis
+> notebook (predicted vs actual scatter, Q-Q plot).
 
 ---
 
@@ -180,7 +225,67 @@ Inference: Permutation test (999 randomisations).
 | k=5 | 0.6673 | 11.91 | < 0.001 |
 | k=8 | 0.6590 | 14.56 | < 0.001 |
 
-**Interpretation**: Moran's I is consistently positive across k-specifications, indicating positive spatial autocorrelation (nearby districts tend to have similar disaster rates). This spatial pattern was embedded in the synthetic data generator and its recovery validates the simulation design.
+**Interpretation**: Under the simulation design, Moran’s I is consistently positive across
+k-specifications, indicating positive spatial autocorrelation (nearby simulated districts
+tend to have similar disaster rates). This spatial pattern was embedded in the synthetic
+data generator through the grid-based geographic assignment, and its recovery validates
+the simulation design.
+
+---
+
+## 6. Time Series Dependence
+
+**Concern**: Monthly observations from the same district are temporally correlated.
+Chronological train/test splitting prevents future leakage, but does not fully
+address temporal structure.
+
+**How temporal dependence is addressed in this project**:
+
+| Approach | Implementation | Purpose |
+| --- | --- | --- |
+| Lag features | `Previous_Month_Disaster_Occurred`, `Previous_Month_Hazard_Severity` | Explicitly models AR(1) structure |
+| Rolling window | `Rolling_12_Month_Disaster_Count` | Captures long-term persistence |
+| Seasonal encoding | `Season` (categorical: Monsoon, Winter, Summer, Spring) | Controls for seasonality |
+| Chronological split | Train ≤ 2022, Val = 2024, Test = 2025 | No future leakage |
+| Cluster-robust SEs | Bootstrap and regression cluster by district | Accounts for within-district serial correlation |
+| AR(1) in data generation | Autoregressive coefficient ~0.55 | Simulates month-to-month persistence |
+
+**Limitations acknowledged**:
+- No formal autocorrelation function (ACF/PACF) analysis is performed on residuals.
+- The lag structure (t-1 only) may not capture higher-order temporal dependencies.
+- Dedicated time series models (ARIMA, LSTM) are identified as future work.
+- Seasonal effects are captured via categorical encoding rather than harmonic terms.
+
+---
+
+## 7. External Applicability
+
+> **Critical caveat**: This project demonstrates a complete analytical pipeline
+> using synthetic data. The pipeline itself is **transferable**; the numerical
+> results are **not**.
+
+**What transfers to real-world data**:
+1. The feature engineering pipeline (HEVC framework, lag construction, rate computation)
+2. The model training architecture (chronological split, threshold optimisation, cluster bootstrap)
+3. The evaluation methodology (calibration, DCA, cost-sensitive analysis, spatial validation)
+4. The reporting framework (JSON-driven, reproducible)
+
+**What does NOT transfer**:
+1. Specific coefficients, p-values, and effect sizes
+2. Model hyperparameters (would need retuning)
+3. Risk index weights (would need domain expert recalibration)
+4. Threshold values (depend on base rate in the target population)
+
+**Recommended pathway for real-world application**:
+1. Obtain district-month panel data from national disaster agencies (e.g., DesInventar India, EM-DAT)
+2. Map variables to the existing feature schema
+3. Retrain all models on real data; recalibrate thresholds
+4. Validate using spatial and temporal hold-out sets
+5. Conduct pilot deployment in advisory (non-operational) mode
+
+> If even a small real-world dataset were available (e.g., 20 districts × 60 months),
+> running the pipeline on it would provide a preliminary external validation.
+> This is identified as the highest-priority future work.
 
 ---
 
@@ -193,3 +298,27 @@ Inference: Permutation test (999 randomisations).
 3. **Synthetic data caveat**: All statistical relationships in these data were programmed
    into the data-generating process. Significant test results confirm recovery of the
    simulation design, not empirical discoveries about real disasters.
+4. **Bootstrap methodology**: Confidence intervals use the **percentile method** with
+   N=1,000 bootstrap resamples, clustered by district (100 district clusters resampled
+   with replacement). District-level resampling was chosen because observations within
+   the same district share unobserved district-level effects (geography, demographics,
+   infrastructure). Row-level resampling would underestimate standard errors by treating
+   correlated within-district observations as independent.
+5. **Clustering methodology**: K-Means clustering uses k=4 (recommended operationally)
+   justified by: (a) silhouette analysis across k=2–7 (all silhouette < 0.25, indicating
+   a continuum rather than discrete groups), (b) Davies-Bouldin index, (c) operational
+   requirement for balanced cluster sizes (min 20 districts per cluster). Inertia (elbow)
+   analysis is computed alongside silhouette. Cluster stability is partially addressed
+   via the silhouette analysis; formal stability testing (e.g., consensus clustering) is
+   identified as future work.
+6. **Risk index circularity warning**: The Disaster_Risk_Score is a weighted sum of
+   Hazard_Score, Exposure_Score, Vulnerability_Score, and Preparedness_Deficit_Score.
+   These component scores are themselves derived from the same features used as ML
+   predictors. Therefore: (a) regression of risk score on its components is tautological;
+   (b) ML models predicting risk category are partially recovering the index formula;
+   (c) the classification target `Disaster_Next_Month` does NOT suffer from this
+   circularity because it is derived from the hazard probability model, not the risk
+   index. **The classifier predicts disaster events, not the risk score.**
+7. **Multiple testing**: No correction (e.g., Bonferroni) is applied because each
+   hypothesis test addresses a distinct research question. The tests are pre-specified,
+   not exploratory data dredging.

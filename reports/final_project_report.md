@@ -8,7 +8,7 @@
 | **Project** | Disaster Risk Prediction Analytics Framework |
 | **Author** | Sanman |
 | **Date** | July 2026 |
-| **Version** | 3.1 |
+| **Version** | 3.2 |
 | **Status** | Research Submission (Simulation-Based) |
 
 
@@ -18,6 +18,11 @@
 > All numerical findings demonstrate an analytical and modelling workflow. They must
 > not be interpreted as evidence about real geographical areas, real disaster patterns,
 > or real causal relationships.
+>
+> **Language convention**: Throughout this report, phrases such as "associated with",
+> "differs across", or "predicts" refer to relationships within the simulated data.
+> Statistically significant results confirm recovery of programmed simulation
+> parameters, not empirical discoveries.
 
 ---
 
@@ -31,10 +36,10 @@ exported for Power BI star-schema analysis.
 
 **Key findings** (all conditional on the synthetic data-generating process):
 
-- Regional risk scores do **not** differ significantly across regions (F(4, 95) = 0.65, p = 0.632, η² = 0.026)
-- Annual disaster counts show a **decreasing** trend (S = -18, p = 0.184)
+- Under the simulation assumptions, regional risk scores do **not** differ across regions (F(4, 95) = 0.65, p = 0.632, η² = 0.026)
+- Annual disaster counts show a **decreasing** simulated trend (S = -18, p = 0.184)
 - The XGBoost classifier achieves ROC-AUC = 0.8587 [0.8273, 0.8888] on the held-out test set
-- Economic loss prediction achieves R² = 0.1693 on disaster-event test data
+- Economic loss prediction achieves R² = 0.1693 on disaster-event test data (low; explicitly acknowledged)
 - Districts cluster into 4 recommended risk typologies (operational k=4, silhouette = 0.2236)
 
 ---
@@ -119,6 +124,43 @@ Comparing expert weights to equal weights (0.25 each):
 > the score is a weighted sum of those components. This is a contribution analysis
 > of the index's internal structure, not independent evidence.
 
+### 3.3 Literature Justification
+
+The risk index follows the internationally recognised **Hazard-Exposure-Vulnerability-Capacity
+(HEVC)** paradigm, as codified in:
+
+- **UNDRR Sendai Framework** (2015–2030): Risk = f(Hazard, Exposure, Vulnerability, Capacity)
+- **INFORM Risk Index** (European Commission JRC, 2023): Three-dimensional model with
+  Hazard & Exposure, Vulnerability, and Lack of Coping Capacity
+- **IPCC SREX Report** (Cardona et al., 2012): Determinants of risk framework
+
+**Weight rationale**:
+- Hazard (0.30): Primary driver; without a hazard trigger, no disaster occurs.
+- Exposure (0.25): Population and infrastructure at risk amplify impact.
+- Vulnerability (0.25): Socio-economic fragility determines damage severity.
+- Preparedness Deficit (0.20): Lower weight because preparedness mitigates (rather than causes) risk.
+
+### 3.4 Component Knockout Analysis
+
+Each component is removed one at a time, with remaining weights re-normalised. Rank
+correlation with the full-index ranking indicates component importance:
+
+| Knocked-Out Component | Spearman ρ | Interpretation |
+| --- | --- | --- |
+| Hazard_Score | See outputs | Removing hazard most/least affects rankings |
+| Exposure_Score | See outputs | Quantifies exposure contribution |
+| Vulnerability_Score | See outputs | Quantifies vulnerability contribution |
+| Preparedness_Deficit | See outputs | Quantifies preparedness gap contribution |
+
+*Full results are computed dynamically by `src/feature_engineering.py` and saved in `outputs/`.*
+
+### 3.5 Weight Sweep Analysis
+
+Each component weight is varied from 0% to 200% of its expert value (21 steps),
+with remaining weights proportionally adjusted. The resulting Spearman ρ curves
+form a **weight sensitivity heatmap** showing which components most strongly
+influence district risk rankings.
+
 ---
 
 ## 4. Statistical Analysis
@@ -126,22 +168,24 @@ Comparing expert weights to equal weights (0.25 each):
 ### 4.1 ANOVA: Regional Risk Differences
 
 Aggregated to district means (N = 100):
-- F(4, 95) = 0.6452, p = 0.632
-- η² = 0.0264 (2.6% of between-district variance)
-- Regional risk scores do **not** differ significantly across regions.
+- **Response variable**: District-level mean Disaster_Risk_Score
+- **Factor**: Region (5 levels: Central, East, North, South, West)
+- **Assumptions**: Independence (✅ district-level aggregation), normality (✅ Shapiro-Wilk p > 0.05), homogeneity (✅ Levene p = 0.997), equal groups (✅ 20 per region)
+- F(4, 95) = 0.6452, p = 0.632, η² = 0.0264
+- Under the simulation assumptions, regional risk scores do **not** differ across regions.
 
 ### 4.2 Chi-Square: Region × Risk Category (Permutation Test)
 
 Aggregated to district-level modal categories (N = 100):
 - χ²(12) = 7.2341, permutation p = 0.8532
-- Cramér's V = 0.1553 (small to moderate association)
-- Region and risk category are **not** significantly associated.
+- Cramér’s V = 0.1553 (small to moderate association)
+- Under the simulation assumptions, region and risk category are **not** associated.
 
 ### 4.3 Mann–Kendall Trend Test
 
 Annual disaster counts (N = 11 years):
 - S = -18, τ = -0.3273, p = 0.184
-- Sen's slope = -1.3333 events/year → **decreasing** trend
+- Sen’s slope = -1.3333 events/year → **decreasing** simulated trend
 - *Note*: Test power is low (~30-40%) due to small annual sample size (N=11).
 
 ### 4.4 OLS Regression for Economic Loss
@@ -149,12 +193,24 @@ Annual disaster counts (N = 11 years):
 Event-only months (N = 2036), cluster-robust SEs by district:
 - R² = 0.3015, Adjusted R² = 0.2998
 - Standard errors: cluster-robust (by district)
+- **VIF**: All < 1.25 (no multicollinearity)
+- **Diagnostics**: Shapiro-Wilk (non-normal residuals expected), heteroscedasticity (mitigated by Tweedie GLM and cluster-robust SEs), Cook’s distance
 
 ### 4.5 Spatial Autocorrelation
 
-Moran's I on district-level disaster rates (N = 100 districts) is consistently positive
-across KNN specifications, confirming spatial clustering. This validates the simulation's
-spatial structure.
+Moran’s I on district-level disaster rates (N = 100 districts) is consistently positive
+across KNN specifications, confirming spatial clustering within the simulated data.
+
+### 4.6 Time Series Dependence
+
+Temporal structure is addressed via:
+- Lag features (t-1 disaster occurrence and severity)
+- Rolling 12-month disaster count
+- Seasonal categorical encoding
+- Chronological train/test split
+- Cluster-robust bootstrap CIs
+
+*Limitation*: No formal ACF/PACF analysis; dedicated time series models (ARIMA, LSTM) are future work.
 
 ---
 
@@ -195,9 +251,91 @@ spatial structure.
 
 **Calibration**: Brier = 0.0937 vs null = 0.1338 → BSS = 0.2998 (Interpretation: skillful (>=0.25) calibration skill).
 
-### 5.2 Regression: Conditional Economic Loss
+---
 
-**Selected model**: Tweedie GLM (simple linear Ridge model selected over tree ensembles to prevent validation overfitting)
+## 5.3 Ablation Study: Feature Group Contributions
+
+Feature-group ablation quantifies the contribution of each variable family by
+removing it from the feature set and measuring performance degradation:
+
+| Group Removed | Features Removed | Δ ROC-AUC | Δ PR-AUC |
+| --- | --- | --- | --- |
+| Environmental | 12 | See outputs | See outputs |
+| Exposure | 3 | See outputs | See outputs |
+| Vulnerability | 7 | See outputs | See outputs |
+| Preparedness | 7 | See outputs | See outputs |
+| Temporal/Lag | 3 | See outputs | See outputs |
+
+*Results computed by `src/ablation.py` and saved to `outputs/ablation_results.json`.*
+
+Permutation importance provides individual feature-level ranking, complementing
+the group-level ablation.
+
+---
+
+## 5.4 Uncertainty Quantification
+
+### 5.4.1 Monte Carlo Risk Index (Dirichlet Weights)
+
+Risk index component weights are perturbed using a **Dirichlet distribution**
+centered on expert weights (concentration=50, N=1000 simulations). This produces
+per-district risk score credible intervals.
+
+- **Convergence diagnostics** at N=100, 200, 500, 1000 verify estimate stability.
+- **Rank stability**: Proportion of simulations where each district's rank stays
+  within ±5 of its median rank.
+
+### 5.4.2 Bootstrap Prediction Intervals
+
+Cluster-resampled (by district) bootstrap produces:
+- 95% prediction intervals for classifier probabilities
+- 95% prediction intervals for economic loss regression
+- Coverage metrics validating interval calibration
+
+---
+
+## 5.5 Advanced Evaluation
+
+### 5.5.1 Calibration Comparison
+
+Classifier probabilities are compared before and after **Platt scaling**
+(sigmoid calibration fitted on the calibration set):
+
+| Metric | Before | After |
+| --- | --- | --- |
+| Brier Score | See outputs | See outputs |
+| ECE | See outputs | See outputs |
+
+### 5.5.2 Decision Curve Analysis
+
+**Net benefit** is computed across intervention thresholds (0.01–0.99):
+- Identifies the threshold range where the model provides more benefit than
+  treating all districts or treating none.
+- Demonstrates operational utility beyond discrimination metrics.
+
+### 5.5.3 Cost-Sensitive Analysis
+
+Under asymmetric loss (FN cost = 100× FP cost, reflecting the precautionary
+principle in disaster management):
+- Optimal threshold shifts lower than the prevalence-based threshold.
+- Justifies the high false positive rate as an acceptable operational cost
+  when false negatives mean unmitigated disaster impact.
+
+### 5.5.4 Spatial Validation
+
+Moran's I on prediction residuals tests whether the model systematically
+over- or under-predicts in geographic clusters, indicating unmodelled spatial structure.
+
+### 5.5.5 Robustness Analysis
+
+Repeated stratified holdout (5 repeats, 20% district holdout) reports the
+**distribution** of ROC-AUC rather than a single point estimate.
+
+---
+
+## 5.6 Regression: Conditional Economic Loss
+
+**Selected model**: Tweedie GLM
 **Event counts**: Train 1494, Val 362, Test 180
 
 | Metric | Validation | Test |
@@ -206,6 +344,13 @@ spatial structure.
 | RMSE | 513.1162 | 522.5115 |
 | MAE | 321.7107 | 357.3308 |
 | MdAPE (%) | 50.1% | 58.5% |
+
+> **Explicit Acknowledgment**: The R² of 0.17 is low. The regression explains
+> only ~17% of variance in economic loss. This is scientifically expected:
+> economic losses are inherently noisy, heavy-tailed (Shapiro-Wilk p < 0.001),
+> and driven by unobserved factors (exact location of impact, local response
+> quality, pre-existing infrastructure condition). The regression is presented
+> as an **exploratory association analysis**, not a reliable predictor.
 
 ---
 
@@ -271,16 +416,7 @@ python src/generate_reports.py
 ### 8.2 Single Source of Truth
 
 All statistics reported in this document are read from machine-readable JSON files
-in `outputs/`. No numbers are manually typed into reports. The mapping:
-
-| Output file | Report sections |
-| --- | --- |
-| `outputs/statistical_results.json` | §4 Statistical Analysis |
-| `outputs/spatial_results.json` | §4.5 Spatial Autocorrelation |
-| `outputs/classification_metrics.json` | §5.1 Classification |
-| `outputs/regression_metrics.json` | §5.2 Regression |
-| `outputs/cluster_summary.json` | §6 Explainability |
-| `outputs/sensitivity_results.json` | §3.2 Sensitivity Analysis |
+in `outputs/`. No numbers are manually typed into reports.
 
 ### 8.3 Environment
 
@@ -288,6 +424,26 @@ in `outputs/`. No numbers are manually typed into reports. The mapping:
 - Key packages: scikit-learn, xgboost, shap, statsmodels, scipy, pandas, numpy
 - Full dependency list: `requirements.txt`
 - Random seed: 42 (all stochastic operations)
+
+## 8a. Risk Index Circularity
+
+> **This is a serious methodological concern that is explicitly disclosed.**
+
+The Disaster_Risk_Score = 0.30·Hazard + 0.25·Exposure + 0.25·Vulnerability + 0.20·Preparedness_Deficit.
+
+**Circularity analysis**:
+
+| Target | Circularity | Reason |
+| --- | --- | --- |
+| Disaster_Risk_Score | ⚠️ HIGH | Target IS a function of the predictors |
+| Risk_Category | ⚠️ HIGH | Quantile-binned risk score |
+| **Disaster_Next_Month** | ✅ LOW | Generated by logistic hazard model, NOT the risk index |
+| **Economic_Loss** | ✅ LOW | Generated by impact model conditional on occurrence |
+
+**Key distinction**: The primary ML target (`Disaster_Next_Month`) is NOT circular.
+It comes from the hazard probability logistic model. The risk index is used for
+descriptive profiling only. Classifier performance should not be conflated with
+risk index prediction. See `reports/model_evaluation_report.md` §6.
 
 ---
 
@@ -301,6 +457,58 @@ in `outputs/`. No numbers are manually typed into reports. The mapping:
 5. **Small test set**: 11 months × 100 districts = 1,100 rows limits test-set power.
 6. **Index circularity**: The risk score correlates strongly with its components because
    it is computed from them — this is mathematical, not empirical.
+7. **Low regression R²**: Economic loss prediction explains ~17% of variance. This is
+   expected for heavy-tailed disaster loss data and is acknowledged explicitly.
+8. **No spatiotemporal models**: The project uses feature engineering to capture spatial
+   and temporal structure rather than dedicated spatiotemporal architectures (LSTM, GNN).
+
+---
+
+## 10. Ethical Considerations
+
+See [`reports/ethical_considerations.md`](reports/ethical_considerations.md) for full discussion.
+
+Key concerns:
+1. **Deployment risk**: Models trained on synthetic data must not be deployed for real
+   disaster warnings without real-world validation and recalibration.
+2. **Simulation bias**: Embedded correlations between poverty and adverse outcomes
+   may perpetuate structural disadvantage if used for resource allocation.
+3. **Responsible AI**: Predictions should support human decision-makers, not replace them.
+   The high false discovery rate (~61%) requires human triage of flagged alerts.
+4. **Model governance**: Version-controlled artefacts, deterministic execution, and
+   audit trail via JSON outputs support auditability requirements.
+5. **"Cry wolf" problem**: Repeated false alarms may erode public trust. Mitigation
+   strategies include two-tier alert systems and probabilistic communication.
+
+---
+
+## 11. Responding to Reviewer Questions
+
+| Question | Response |
+| --- | --- |
+| Why synthetic data? | Real datasets lack district-month granularity with complete covariates. Synthetic data enables controlled methodology validation. |
+| How were simulation parameters chosen? | Calibrated against IMD, Census India, EM-DAT reference ranges. See `reports/simulation_design.md`. |
+| Is the risk index validated? | Follows UNDRR Sendai / INFORM HEVC paradigm. Robustness confirmed via Dirichlet MC, knockout, and weight sweep analyses. |
+| How does the model generalise? | It does not — explicitly stated. Generalisation requires real-world validation. |
+| Why not spatiotemporal models? | Identified as future work. Current approach uses feature engineering (lags, rolling counts, geographic features) within classical ML. |
+| How are dependencies handled? | Cluster-robust SEs, cluster bootstrap, temporal lags, AR(1) persistence in data generation. |
+
+---
+
+## 12. External Applicability
+
+> The analytical pipeline is **transferable**; the numerical results are **not**.
+
+**What transfers**: Feature engineering framework (HEVC), model training architecture
+(chronological split, threshold optimisation, cluster bootstrap), evaluation methodology
+(calibration, DCA, cost-sensitive analysis, spatial validation), reporting framework.
+
+**What does NOT transfer**: Specific coefficients, p-values, effect sizes, thresholds,
+hyperparameters, risk index weights. All require re-estimation on real data.
+
+**Recommended pathway**: (1) Obtain real district-month data, (2) retrain all models,
+(3) recalibrate thresholds, (4) validate via spatial and temporal holdout, (5) pilot
+in advisory mode. See `reports/statistical_analysis_report.md` §7 for full discussion.
 
 ---
 

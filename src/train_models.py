@@ -7,8 +7,16 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression, Ridge, GammaRegressor, TweedieRegressor
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import (
+    RandomForestClassifier, RandomForestRegressor,
+    GradientBoostingClassifier, GradientBoostingRegressor
+)
 from xgboost import XGBClassifier, XGBRegressor
+try:
+    from lightgbm import LGBMClassifier, LGBMRegressor
+    LIGHTGBM_AVAILABLE = True
+except ImportError:
+    LIGHTGBM_AVAILABLE = False
 from sklearn.model_selection import TimeSeriesSplit, RandomizedSearchCV
 
 # List of pre-event predictors (Features at month t to predict disaster at month t+1)
@@ -123,6 +131,23 @@ def train_classifier(X_train, y_train, model_type="random_forest", class_weights
             neg_count = (y_train == 0).sum()
             scale_pos = neg_count / max(1, pos_count)
         classifier = XGBClassifier(n_estimators=100, scale_pos_weight=scale_pos, eval_metric="logloss", random_state=42, n_jobs=1)
+    elif model_type == "gradient_boosting":
+        classifier = GradientBoostingClassifier(
+            n_estimators=100, max_depth=5, learning_rate=0.1,
+            random_state=42
+        )
+    elif model_type == "lightgbm":
+        if not LIGHTGBM_AVAILABLE:
+            raise ImportError("LightGBM is not installed. Install with: pip install lightgbm")
+        scale_pos = 1.0
+        if class_weights == "balanced":
+            pos_count = (y_train == 1).sum()
+            neg_count = (y_train == 0).sum()
+            scale_pos = neg_count / max(1, pos_count)
+        classifier = LGBMClassifier(
+            n_estimators=100, scale_pos_weight=scale_pos,
+            random_state=42, n_jobs=1, verbose=-1
+        )
     else:
         raise ValueError(f"Unknown model_type: {model_type}")
         
@@ -150,6 +175,18 @@ def train_regressor(X_train, y_train, model_type="random_forest"):
         fit_log = True
     elif model_type == "xgboost":
         regressor = XGBRegressor(n_estimators=100, random_state=42, n_jobs=1)
+        fit_log = True
+    elif model_type == "gradient_boosting":
+        regressor = GradientBoostingRegressor(
+            n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42
+        )
+        fit_log = True
+    elif model_type == "lightgbm":
+        if not LIGHTGBM_AVAILABLE:
+            raise ImportError("LightGBM is not installed. Install with: pip install lightgbm")
+        regressor = LGBMRegressor(
+            n_estimators=100, random_state=42, n_jobs=1, verbose=-1
+        )
         fit_log = True
     elif model_type == "gamma":
         regressor = GammaRegressor(max_iter=10000, alpha=1.0)
